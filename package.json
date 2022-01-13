@@ -1,0 +1,21 @@
+{
+  "name": "toast-e",
+  "version": "1.0.0",
+  "description": "A JavaScript Library to display customizable toast notifications.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Toast",
+    "Toast",
+    "Plugin",
+    "Notification",
+    "JavaScript",
+    "JavaScript",
+    "Toast",
+    "Plugin"
+  ],
+  "author": "Jacob Darker",
+  "license": "MIT"
+}
