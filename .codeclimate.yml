@@ -4,19 +4,19 @@ checks:
       threshold: 4
   complex-logic:
     config:
-      threshold: 5
+      threshold: 4
   file-lines:
     config:
-      threshold: 700
+      threshold: 250
   method-complexity:
     config:
-      threshold: 20
+      threshold: 5
   method-count:
     config:
       threshold: 20
   method-lines:
     config:
-      threshold: 100
+      threshold: 50
   nested-control-flow:
     config:
       threshold: 4
@@ -25,6 +25,8 @@ checks:
       threshold: 4
 plugins:
   git-legal:
+    enabled: true
+  scss-lint:
     enabled: true
 exclude_patterns:
   - 'config/'

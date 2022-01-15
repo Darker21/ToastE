@@ -1,33 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: ToastE.module.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
-
-<body>
-
-    <div id="main">
-
-        <h1 class="page-title">Source: ToastE.module.js</h1>
-
-
-
-
-
-
-        <section>
-            <article>
-                <pre class="prettyprint source linenums"><code>import { ToastEDefaultOptions } from "./lib/options.default";
+import Utils from '../utils/Utils';
+import { fadeIn, fadeOut } from './animations/fade';
+import { expandVertical, collapseVertical, expandHorizontal, collapseHorizontal } from './animations/expand';
 
 const _positionClasses = [
     "bottom-left",
@@ -41,17 +14,26 @@ const _positionClasses = [
 const _defaultIcons = ["success", "error", "info", "warning"];
 
 /**
- * @module ToastE
+ * ToastE core class responsible for core functionality
+ * 
+ * @module Core
+ * @private
  */
-export default class ToastE {
+export default class Core {
     /**
-     * The constructor for the Toast Notification
-     * @param {string | number} opts The options object or the toast notification text
+     * The initializer method for the ToastE notification library
+     * @param {string | string[] | Options()} [opts=Options] The Options object or the toast notification text
      */
-    constructor(opts) {
-        this.prepareOptions(opts, ToastEDefaultOptions);
+    init(opts = Options) {
+        this.prepareOptions(opts, Options);
         this.process();
     }
+
+    /**
+     * Prepares the Options for the Toast Notification before handling any functionality
+     * @param {Options | string | string[]} options The new Options object or toast notifications desired text
+     * @param {Options} optionsToExtend The old Options object to merge with
+     */
     prepareOptions(options, optionsToExtend) {
         var _options = {};
 
@@ -61,9 +43,13 @@ export default class ToastE {
             _options = options;
         }
 
-        this.options = Object.assign({}, optionsToExtend, _options);
+        // Merge the Options objects
+        this.options = Utils.extend(optionsToExtend, _options);
     }
 
+    /**
+     * Processes the toast notification
+     */
     process() {
         this.setup();
         this.addToDom();
@@ -73,11 +59,9 @@ export default class ToastE {
     }
 
     /**
-     * Setup initial version of ToastE notification
+     * Setup ToastE element
      */
     setup() {
-        var toastContent = [];
-
         var _defaultToastContent = document.createElement("div");
         _defaultToastContent.className = "toaste-single";
 
@@ -92,7 +76,7 @@ export default class ToastE {
         if (this.options.allowToastClose) {
             let toastCloseIcon = document.createElement("span");
             toastCloseIcon.className = "toaste-close";
-            toastCloseIcon.innerText = "&amp;times;";
+            toastCloseIcon.innerText = "&times;";
 
             this._toastEl.appendChild(toastCloseIcon);
         }
@@ -106,11 +90,23 @@ export default class ToastE {
         }
 
         // Insert Text
+        this.generateToastText();
+
+        // Update the Toast styles
+        this.setToastElementStyles();
+    }
+
+    /**
+     * Generates and appends the text element(s) to the toast notification
+     */
+    generateToastText() {
+        // if array: create an unordered list element of text
+        // else: create span element of text
         if (this.options.text instanceof Array) {
             let toastLines = document.createElement("ul");
             toastLines.className = "toaste-ul";
 
-            for (; i &lt; this.options.text.length; i++) {
+            for (; i < this.options.text.length; i++) {
                 let textElement = document.createElement("li");
                 textElement.className = "toaste-li";
                 textElement.id = `toaste-item-${i}`;
@@ -124,7 +120,12 @@ export default class ToastE {
 
             this._toastEl.appendChild(textElement);
         }
+    }
 
+    /**
+     * Sets the Toast Notification element styles
+     */
+    setToastElementStyles() {
         // Set BG Colour
         if (this.options.bgColor !== false) {
             this._toastEl.style.backgroundColor = this.options.bgColor;
@@ -144,7 +145,7 @@ export default class ToastE {
         if (this.options.icon !== false) {
             this._toastEl.classList.add("toaste-has-icon");
 
-            if (this._defaultIcons.findIndex(this.options.icon) > -1) {
+            if (_defaultIcons.findIndex(this.options.icon) > -1) {
                 this._toastEl.classList.add(
                     `toaste-icon-${this.options.icon}`
                 );
@@ -162,8 +163,8 @@ export default class ToastE {
      */
     position() {
         if (
-            typeof this.options.position === "string" &amp;&amp;
-            this._positionClasses.indexOf(this.options.position) > -1
+            typeof this.options.position === "string" &&
+            _positionClasses.indexOf(this.options.position) > -1
         ) {
             let containerRect = this._container.getBoundingClientRect();
 
@@ -215,6 +216,9 @@ export default class ToastE {
         }
     }
 
+    /**
+     * Binds the events passed in the {@link Options} object to 
+     */
     bindToast() {
         const that = this;
 
@@ -231,7 +235,12 @@ export default class ToastE {
         }
     }
 
-    _CloseToast(ev, toastEInstance) {
+    /**
+     * Closes the specified ToastE element
+     * @param {Event} ev The event that called the close method
+     * @param {Core} toastEInstance The ToastE object instance to close
+     */
+    CloseToast(ev, toastEInstance) {
         ev.preventDefault();
 
         var evToastHide = new Event("toast.on.hide");
@@ -259,36 +268,4 @@ export default class ToastE {
             });
         }
     }
-}</code></pre>
-            </article>
-        </section>
-
-
-
-
-    </div>
-
-    <nav>
-        <h2><a href="index.html">Home</a></h2>
-        <h3>Modules</h3>
-        <ul>
-            <li><a href="module-ToastE.html">ToastE</a></li>
-        </ul>
-        <h3>Classes</h3>
-        <ul>
-            <li><a href="module-ToastE.html">ToastE</a></li>
-        </ul>
-    </nav>
-
-    <br class="clear">
-
-    <footer>
-        Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Fri Jan 14 2022 19:23:35
-        GMT+0000 (Greenwich Mean Time)
-    </footer>
-
-    <script> prettyPrint(); </script>
-    <script src="scripts/linenumber.js"> </script>
-</body>
-
-</html>
+}

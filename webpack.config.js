@@ -1,5 +1,5 @@
-const path = require('path')
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const path = require('path');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
     entry: [path.resolve(__dirname, 'src/ToastE.js')],
@@ -51,4 +51,4 @@ module.exports = {
             openAnalyzer: false
         })
     ]
-}
+};

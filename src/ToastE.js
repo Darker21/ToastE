@@ -1,5 +1,5 @@
-import { fadeIn, fadeOut } from './animations/fade';
-import { slideUp, slideDown, slideLeft, slideRight } from './animations/slide';
+import { fadeIn, fadeOut } from './modules/animations/fade';
+import { slideUp, slideDown, slideLeft, slideRight } from './modules/animations/expand';
 
 /*!
  * ToastE js 1.0.0

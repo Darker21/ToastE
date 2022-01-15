@@ -1,0 +1,25 @@
+@mixin expand-content($dimension-attr: height, $animation-duration: -1, $interpolation: ease-in-out) {
+    @if ($animation-duration < 0) {
+        $animation-duration: var(--toaste-animation-duration);
+    }
+
+    display: none;
+    #{$dimension-attr}: 0;
+
+    @if ($enable-expand-animation-fade) {
+        opacity: 0;
+    }
+
+    overflow: hidden;
+    transition: #{$dimension-attr} $animation-duration #{$interpolation},
+    opacity $animation-duration #{$interpolation};
+}
+
+@mixin expand-content-expanded($dimension-attr) {
+    display: block;
+    #{$dimension-attr}: 'auto';
+
+    @if ($enable-expand-animation-fade) {
+        opacity: 1;
+    }
+}

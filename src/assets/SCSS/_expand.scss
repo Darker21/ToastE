@@ -1,0 +1,17 @@
+.toaste-expand-up,
+.toaste-expand-down {
+    @include expand-content($dimension-attr: height, $interpolation: ease-in-out);
+
+    .toaste-expanded {
+        @include expand-content-expanded($dimension-attr: height);
+    }
+}
+
+.toaste-expand-left,
+.toaste-expand-right {
+    @include expand-content($dimension-attr: width, $interpolation: ease-in-out);
+
+    .toaste-expanded {
+        @include expand-content-expanded($dimension-attr: width);
+    }
+}
