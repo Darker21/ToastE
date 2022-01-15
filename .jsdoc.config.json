@@ -17,7 +17,8 @@
     },
     "opts": {
         "readme": "README.md",
-        "package": "package.json"
+        "package": "package.json",
+        "destination": "./docs"
     },
     "sourceType": "module",
     "tags": {
