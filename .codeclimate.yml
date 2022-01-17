@@ -44,3 +44,4 @@ exclude_patterns:
   - '**/vendor/'
   - '**/*_test.go'
   - 'src/modules/settings/Options.js'
+  - 'build/config.js'

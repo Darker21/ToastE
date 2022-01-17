@@ -5,9 +5,10 @@
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.ToastE = factory());
-}(this, (function () { 'use strict';
+    typeof define === 'function' && define.amd ? define(factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.ToastE = factory());
+}(this, (function () {
+  'use strict';
 
   function _typeof(obj) {
     "@babel/helpers - typeof";
@@ -84,7 +85,7 @@
         if (it) o = it;
         var i = 0;
 
-        var F = function () {};
+        var F = function () { };
 
         return {
           s: F,
@@ -108,8 +109,8 @@
     }
 
     var normalCompletion = true,
-        didErr = false,
-        err;
+      didErr = false,
+      err;
     return {
       s: function () {
         it = it.call(o);
@@ -360,15 +361,15 @@
     this.textAlign = "left";
     this.icon = false;
 
-    this.beforeShow = function () {};
+    this.beforeShow = function () { };
 
-    this.afterShown = function () {};
+    this.afterShown = function () { };
 
-    this.beforeHide = function () {};
+    this.beforeHide = function () { };
 
-    this.afterHide = function () {};
+    this.afterHide = function () { };
 
-    this.onClick = function () {};
+    this.onClick = function () { };
   });
 
   var _positionClasses = ["bottom-left", "bottom-right", "top-right", "top-left", "bottom-center", "top-center", "mid-center"];
@@ -388,17 +389,17 @@
     _createClass(Core, [{
       key: "init",
       value:
-      /**
-       * The initializer method for the ToastE notification library
-       * @param {string | string[] | Options()} [opts=Options] The Options object or the toast notification text
-       */
-      function init() {
-        var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Options();
-        console.log(opts); // console.log(new Options());
+        /**
+         * The initializer method for the ToastE notification library
+         * @param {string | string[] | Options()} [opts=Options] The Options object or the toast notification text
+         */
+        function init() {
+          var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Options();
+          console.log(opts); // console.log(new Options());
 
-        this.prepareOptions(opts, new Options());
-        this.process();
-      }
+          this.prepareOptions(opts, new Options());
+          this.process();
+        }
       /**
        * Prepares the Options for the Toast Notification before handling any functionality
        * @param {Options | string | string[]} options The new Options object or toast notifications desired text
@@ -668,7 +669,7 @@
             var toastsRemoving = Array.from(_container.querySelectorAll(".toaste-single").values()).slice(0, extraToastCount);
 
             var _iterator = _createForOfIteratorHelper(toastsRemoving),
-                _step;
+              _step;
 
             try {
               for (_iterator.s(); !(_step = _iterator.n()).done;) {

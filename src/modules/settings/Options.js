@@ -1,4 +1,4 @@
-export default class Options {
+class Options {
     constructor() {
         this.text = "";
         this.heading = "";
@@ -20,3 +20,5 @@ export default class Options {
         this.onClick = () => { };
     }
 }
+
+export { Options };

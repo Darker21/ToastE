@@ -1,7 +1,19 @@
 /**
  * Generic functions which are not dependent on ToastE
  */
-class Utils {
+export default class Utils {
+
+    static bind(fn, me) {
+        return function () {
+            return fn.apply(me, arguments);
+        };
+    }
+
+    static isObject(item) {
+        return (
+            item && typeof item === 'object' && !Array.isArray(item) && item != null
+        );
+    }
 
     /**
      * Merges two objects properties

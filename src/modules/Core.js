@@ -1,6 +1,7 @@
 import Utils from '../utils/Utils';
 import { fadeIn, fadeOut } from './animations/fade';
-import { expandVertical, collapseVertical, expandHorizontal, collapseHorizontal } from './animations/expand';
+import { expand, collapse } from './animations/expand';
+import { Options } from './settings/Options';
 
 const _positionClasses = [
     "bottom-left",
@@ -24,8 +25,10 @@ export default class Core {
      * The initializer method for the ToastE notification library
      * @param {string | string[] | Options()} [opts=Options] The Options object or the toast notification text
      */
-    init(opts = Options) {
-        this.prepareOptions(opts, Options);
+    init(opts = new Options()) {
+        console.log(opts);
+        // console.log(new Options());
+        this.prepareOptions(opts, new Options());
         this.process();
     }
 
@@ -36,7 +39,7 @@ export default class Core {
      */
     prepareOptions(options, optionsToExtend) {
         var _options = {};
-
+        console.log(optionsToExtend);
         if (typeof options === "string" || options instanceof Array) {
             _options.text = options;
         } else {
@@ -44,7 +47,7 @@ export default class Core {
         }
 
         // Merge the Options objects
-        this.options = Utils.extend(optionsToExtend, _options);
+        this.options = Utils.extend(_options, optionsToExtend);
     }
 
     /**
@@ -92,6 +95,7 @@ export default class Core {
         // Insert Text
         this.generateToastText();
 
+        console.log(this);
         // Update the Toast styles
         this.setToastElementStyles();
     }
@@ -144,7 +148,7 @@ export default class Core {
         // Add Icon
         if (this.options.icon !== false) {
             this._toastEl.classList.add("toaste-has-icon");
-
+            console.log(this.options);
             if (_defaultIcons.findIndex(this.options.icon) > -1) {
                 this._toastEl.classList.add(
                     `toaste-icon-${this.options.icon}`
@@ -228,20 +232,180 @@ export default class Core {
         });
 
         // Attach the close event for the close button
-        this._toastEl.querySelector("span.toaste-close").addEventListener("click", this._CloseToast(ev, that));
+        this._toastEl
+            .querySelector("span.toaste-close")
+            .addEventListener("click", Utils.bind(this.closeToast, that));
 
+        // Register the available event handlers passed in through options
         if (typeof this.options.beforeShow === "function") {
-            this._toastEl.addEventListener("toast.on.show", that.options.beforeShow(that._toastEl));
+            this._toastEl.addEventListener(
+                "toast.on.show",
+                that.options.beforeShow(that._toastEl)
+            );
         }
+
+        if (typeof this.options.afterShown === "function") {
+            this._toastEl.addEventListener(
+                "toast.on.show",
+                that.options.afterShown(that._toastEl)
+            );
+        }
+
+        if (typeof this.options.beforeHide === "function") {
+            this._toastEl.addEventListener(
+                "toast.on.hide",
+                that.options.afterShown(that._toastEl)
+            );
+        }
+
+        if (typeof this.options.afterHidden === "function") {
+            this._toastEl.addEventListener(
+                "toast.on.hidden",
+                that.options.afterHidden(that._toastEl)
+            );
+        }
+
+        if (typeof this.options.onClick === "function") {
+            this._toastEl.addEventListener(
+                "click",
+                that.options.onClick(that._toastEl)
+            );
+        }
+    }
+
+    addToDom() {
+        var _container = document.querySelector(".toaste-wrap");
+
+        if (!_container) {
+            _container = document.createElement("div");
+            _container.className = "toaste-wrap";
+            _container.setAttribute("role", "alert");
+            _container.setAttribute("aria-live", "polite");
+
+            document.body.appendChild(_container);
+        } else if (
+            !this.options.stack ||
+            isNaN(parseInt(this.options.stack, 10))
+        ) {
+            // remove all child elements from container
+            for (let ele in _container.children) {
+                _container.removeChild(ele);
+            }
+        }
+
+        let toastRemoving = _container.querySelector(
+            ".toaste-single[hidden]"
+        );
+        if (toastRemoving) {
+            _container.removeChild(toastRemoving);
+        }
+
+        _container.appendChild(this._toastEl);
+
+        // Remove old toasts if the number of toasts
+        // is greater than the allowed stack
+        if (
+            this.options.stack &&
+            !isNaN(parseInt(this.options.stack), 10)
+        ) {
+            var previousToastCount =
+                _container.querySelectorAll(".toaste-single").length;
+            var extraToastCount = previousToastCount - this.options.stack;
+
+            // Remove oldest toasts that overflow
+            if (extraToastCount > 0) {
+                var toastsRemoving = Array.from(_container
+                    .querySelectorAll(".toaste-single").values())
+                    .slice(0, extraToastCount);
+
+                for (let toast of toastsRemoving) {
+                    _container.removeChild(toast);
+                }
+            }
+        }
+
+        this._container = _container;
+    }
+
+    canAutoHide() {
+        return (
+            this.options.hideAfter !== false &&
+            !isNaN(parseInt(this.options.hideAfter, 10))
+        );
+    }
+
+    processLoader() {
+        // Show the loader only, if auto-hide is on and loader is demanded
+        if (!this.canAutoHide() || this.options.loader === false) {
+            return false;
+        }
+
+        var loader = this._toastEl.querySelector(".toaste-loader");
+
+        // 400 is the default time
+        // Divide by 1000 for milliseconds to seconds
+        var transitionTime = (this.options.hideAfter - 400) / 1000 + "s";
+        var loaderBg = this.options.loaderBg || '';
+
+        loader.style.setProperty("--toaste-transition-duration", transitionTime + "s");
+
+        if (loaderBg) {
+            loader.style.setProperty("--toaste-loader-bg", this.options.loaderBg);
+        }
+    }
+
+
+    animate() {
+        var that = this;
+        var evBeforeShow = new Event("toaste.on.show");
+
+        this._toastEl.style.display = 'none';
+
+        this._toastEl.dispatchEvent(evBeforeShow);
+
+        if (this.options.showHideTransition.toLowerCase() === 'fade') {
+            fadeIn(this._toastEl, 400, function () {
+                var afterShown = new Event("toaste.on.shown");
+                that._toastEl.dispatchEvent(afterShown);
+            });
+        } else if (this.options.showHideTransition.toLowerCase() === 'slide') {
+            expand(this._toastEl, 400, "UP", function () {
+                var afterShown = new Event("toaste.on.shown");
+                that._toastEl.dispatchEvent(afterShown);
+            });
+        } else {
+            expand(this._toastEl, 400, "RIGHT", function () {
+                var afterShown = new Event("toaste.on.shown");
+                that._toastEl.dispatchEvent(afterShown);
+            });
+        }
+
+        if (this.canAutoHide()) {
+
+            window.setTimeout(Utils.bind(that.closeToast, that), +this.options.hideAfter);
+        }
+    }
+
+    reset(all = true) {
+        if (all) {
+            document.querySelectorAll('.toaste-wrap').forEach(el => el.remove());
+        } else {
+            this._toastEl.remove();
+        }
+    }
+
+    update(optionsUpdated) {
+        this.prepareOptions(optionsUpdated, this.options);
+        this.setup();
+        this.bindToast();
     }
 
     /**
      * Closes the specified ToastE element
-     * @param {Event} ev The event that called the close method
+     * @param {HTMLElement} element The element that called the close method
      * @param {Core} toastEInstance The ToastE object instance to close
      */
-    CloseToast(ev, toastEInstance) {
-        ev.preventDefault();
+    closeToast(element, toastEInstance) {
 
         var evToastHide = new Event("toast.on.hide");
 

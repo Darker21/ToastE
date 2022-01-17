@@ -15,24 +15,13 @@ const _expandDirections = {
  * @param {Function} [callback=null] The callback function to run after element has been completely expanded
  */
 function expand(element, duration, direction, callback = null) {
-    direction = direction.toUpperCase();
+    direction = direction.toUpperCase() || "UP";
 
     // Call relevant function based on the direction passed
-    switch (direction) {
-        case "UP":
-        case "DOWN":
-            expandVertical(element, duration, direction, callback);
-            break;
-
-        case "LEFT":
-        case "RIGHT":
-            expandHorizontal(element, duration, direction, callback);
-            break;
-
-        default:
-            expandVertical(element, duration, "UP", callback);
-            break;
-
+    if (direction === "UP" || direction === "DOWN") {
+        expandVertical(element, duration, direction, callback);
+    } else {
+        expandHorizontal(element, duration, direction, callback);
     }
 }
 

@@ -1,3 +1,18 @@
+var _last;
+
+
+/**
+ * Initialize the fade animation properties
+ * @param {HTMLElement} element The element the fade animation will be applied to
+ * @param {Number|string} startOpacity The starting opacity of the target element
+ * @private
+ */
+function fadeInit(element, startOpacity) {
+    element.style.display = '';
+    element.style.opacity = startOpacity;
+    _last = +new Date();
+}
+
 /**
  * Fade an HTML Element into view
  * @param {HTMLElement} element - The element to fade in
@@ -6,12 +21,11 @@
  * @see {@link https://codepen.io/jorgemaiden/pen/xoRKWN}
  */
 function fadeIn(element, duration, callback = null) {
-    element.style.display = '';
-    element.style.opacity = 0;
-    var last = +new Date();
+
+    fadeInit(element, 0);
     var tick = function () {
-        element.style.opacity = +element.style.opacity + (new Date() - last) / duration;
-        last = +new Date();
+        element.style.opacity = +element.style.opacity + (new Date() - _last) / duration;
+        _last = +new Date();
         if (+element.style.opacity < 1) {
             window.requestAnimationFrame && requestAnimationFrame(tick) || setTimeout(tick, 16);
         } else {
@@ -30,12 +44,10 @@ function fadeIn(element, duration, callback = null) {
  * @param {Function} callback - The callback function called after the animation has completed
  */
 function fadeOut(element, duration, callback = null) {
-    element.style.display = '';
-    element.style.opacity = 1;
-    var last = +new Date();
+    fadeInit(element, 1);
     var tick = function () {
-        element.style.opacity = +element.style.opacity - (new Date() - last) / duration;
-        last = +new Date();
+        element.style.opacity = +element.style.opacity - (new Date() - _last) / duration;
+        _last = +new Date();
         if (+element.style.opacity > 0) {
             window.requestAnimationFrame && requestAnimationFrame(tick) || setTimeout(tick, 16);
         } else {

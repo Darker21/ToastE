@@ -11,7 +11,7 @@ export default class ToastE {
      * @param {Options} options The ToastE notification options
      */
     constructor(options) {
-        this.toastE = Core();
+        this.toastE = new Core();
         this.toastE.init(options);
     }
 
