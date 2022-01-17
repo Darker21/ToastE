@@ -1,5 +1,5 @@
 {
-  "name": "toast-e",
+  "name": "toaste-notifier",
   "version": "1.0.0",
   "description": "A JavaScript Library to display customizable toast notifications.",
   "main": "dist/ToastE.common.js",
@@ -29,17 +29,14 @@
     "e2e": "node tests/e2e/samples.js test",
     "e2e:update": "node test/e2e/samples.js update",
     "build:samples": "node samples/source/index.js generate",
-    "docs": "npx jsdoc -c .jsdoc.config.json"
+    "docs": "rmdir -r \"docs\" & npx jsdoc -c .jsdoc.config.json"
   },
   "keywords": [
     "Toast",
-    "Toast",
-    "Plugin",
-    "Notification",
+    "Toast-Notifications",
+    "Notifications",
     "JavaScript",
-    "JavaScript",
-    "Toast",
-    "Plugin"
+    "Toast"
   ],
   "devDependencies": {
     "@babel/core": "^7.8.7",
@@ -93,5 +90,8 @@
       "type": "MIT",
       "url": "http://www.opensource.org/licenses/mit-license.php"
     }
-  ]
+  ],
+  "bugs": {
+    "url": "https://github.com/Darker21/ToastE/issues"
+  }
 }

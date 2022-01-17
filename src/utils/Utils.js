@@ -1,7 +1,7 @@
 /**
  * Generic functions which are not dependent on ToastE
  */
-export default class Utils {
+class Utils {
 
     static bind(fn, me) {
         return function () {
@@ -75,3 +75,5 @@ export default class Utils {
         return output;
     }
 }
+
+export default { Utils };

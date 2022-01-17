@@ -47,7 +47,7 @@ export default class Core {
         }
 
         // Merge the Options objects
-        this.options = Utils.extend(_options, optionsToExtend);
+        this.options = Utils.extend(optionsToExtend, _options);
     }
 
     /**
@@ -110,7 +110,7 @@ export default class Core {
             let toastLines = document.createElement("ul");
             toastLines.className = "toaste-ul";
 
-            for (; i < this.options.text.length; i++) {
+            for (let i = 0; i < this.options.text.length; i++) {
                 let textElement = document.createElement("li");
                 textElement.className = "toaste-li";
                 textElement.id = `toaste-item-${i}`;
@@ -118,6 +118,8 @@ export default class Core {
 
                 toastLines.appendChild(textElement);
             }
+
+            this._toastEl.appendChild(toastLines);
         } else {
             let textElement = document.createElement("span");
             textElement.innerText = this.options.text;
@@ -234,7 +236,7 @@ export default class Core {
         // Attach the close event for the close button
         this._toastEl
             .querySelector("span.toaste-close")
-            .addEventListener("click", Utils.bind(this.closeToast, that));
+            .addEventListener("click", that.closeToast.bind(that, that));
 
         // Register the available event handlers passed in through options
         if (typeof this.options.beforeShow === "function") {
@@ -275,6 +277,7 @@ export default class Core {
 
     addToDom() {
         var _container = document.querySelector(".toaste-wrap");
+        var toastsRemoving;
 
         if (!_container) {
             _container = document.createElement("div");
@@ -293,11 +296,13 @@ export default class Core {
             }
         }
 
-        let toastRemoving = _container.querySelector(
+        toastsRemoving = _container.querySelectorAll(
             ".toaste-single[hidden]"
         );
-        if (toastRemoving) {
-            _container.removeChild(toastRemoving);
+        if (toastsRemoving) {
+            toastsRemoving.forEach((toast) => {
+                _container.removeChild(toast);
+            });
         }
 
         _container.appendChild(this._toastEl);
@@ -314,7 +319,7 @@ export default class Core {
 
             // Remove oldest toasts that overflow
             if (extraToastCount > 0) {
-                var toastsRemoving = Array.from(_container
+                toastsRemoving = Array.from(_container
                     .querySelectorAll(".toaste-single").values())
                     .slice(0, extraToastCount);
 
@@ -382,7 +387,7 @@ export default class Core {
 
         if (this.canAutoHide()) {
 
-            window.setTimeout(Utils.bind(that.closeToast, that), +this.options.hideAfter);
+            window.setTimeout(this.closeToast.bind(this, that), +this.options.hideAfter);
         }
     }
 
@@ -402,10 +407,14 @@ export default class Core {
 
     /**
      * Closes the specified ToastE element
-     * @param {HTMLElement} element The element that called the close method
      * @param {Core} toastEInstance The ToastE object instance to close
+     * @param {Event} event The event that triggered the close method
      */
-    closeToast(element, toastEInstance) {
+    closeToast(toastEInstance, event) {
+
+        if (event) {
+            event.preventDefault();
+        }
 
         var evToastHide = new Event("toast.on.hide");
 

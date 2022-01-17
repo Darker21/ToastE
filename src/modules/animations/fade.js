@@ -51,6 +51,7 @@ function fadeOut(element, duration, callback = null) {
         if (+element.style.opacity > 0) {
             window.requestAnimationFrame && requestAnimationFrame(tick) || setTimeout(tick, 16);
         } else {
+            element.hidden = true;
             if (callback) {
                 callback.call();
             }

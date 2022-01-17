@@ -15,5 +15,14 @@
             "savePath": "/src/assets/CSS/"
         }
     ],
-    "liveSassCompile.settings.generateMap": true
+    "liveSassCompile.settings.generateMap": true,
+    "circleci-vscode.apiToken": "197154075897f2e3a984a0e092c36428b5dd0638",
+    "editor.formatOnSave": true,
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/.hg/store/**": true
+    },
+    "files.eol": "\r\n"
 }
