@@ -1,0 +1,19 @@
+{
+    "liveSassCompile.settings.autoprefix": [
+        "defaults",
+        "not IE 11"
+    ],
+    "liveSassCompile.settings.formats": [
+        {
+            "format": "compressed",
+            "extensionName": ".min.css",
+            "savePath": "/src/assets/CSS/"
+        },
+        {
+            "format": "expanded",
+            "extensionName": ".css",
+            "savePath": "/src/assets/CSS/"
+        }
+    ],
+    "liveSassCompile.settings.generateMap": true
+}

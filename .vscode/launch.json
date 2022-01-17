@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "name": "Debug Build",
+            "program": "${workspaceFolder}/build/build.js",
+            "request": "launch",
+            "type": "node"
+        }
+    ]
+}
