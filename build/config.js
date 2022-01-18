@@ -25,7 +25,7 @@ const banner =
 const builds = {
     'web-cjs': {
         entry: resolvePath('src/ToastE.js'),
-        dest: resolvePath('dist/ToastE.common.js'),
+        dest: resolvePath('dist/ToastE.cjs'),
         format: 'cjs',
         env: 'production',
         banner
@@ -112,7 +112,7 @@ function rollupConfig(opts) {
             copy(
                 [
                     {
-                        files: 'src/assets/ToastE.css',
+                        files: 'src/assets/css/toaste.*.css*',
                         dest: 'dist/css'
                     },
                     {

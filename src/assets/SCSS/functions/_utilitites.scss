@@ -1,0 +1,15 @@
+@function stringSplit($string, $splitter: " ") {
+    $listResults: ();
+    $splitterIndex: str-index($string: $string, $substring: $splitter);
+
+    @while $splitterIndex !=null {
+        $foundString: str-slice($string: $string, $start: 0, $end: $splitterIndex - 1);
+        $listResults: append($list1: $listResults, $val: $foundString);
+        $string: str-slice($string: $string, $start: $splitterIndex + 1);
+        $splitterIndex: str-index($string: $string, $substring: $splitter)
+    }
+
+    $listResults: append($list1: $listResults, $val: $foundString);
+
+    @return $listResults;
+}

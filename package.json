@@ -1,6 +1,6 @@
 {
   "name": "toaste-notifier",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha1",
   "description": "A JavaScript Library to display customizable toast notifications.",
   "main": "dist/ToastE.common.js",
   "unpkg": "dist/ToastE.js",

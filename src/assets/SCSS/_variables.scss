@@ -4,3 +4,8 @@ $variable-prefix: "--toaste";
 
 $expand-animation-duration: 400ms !default;
 $enable-expand-animation-fade: false !default;
+
+$toaste-positions: "top-left",
+"top-right",
+"bottom-left",
+"bottom-right";

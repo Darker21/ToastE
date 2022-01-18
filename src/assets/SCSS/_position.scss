@@ -1,0 +1,5 @@
+@each $positionName in $toast {
+    $positionalProperties: stringSplit($positionName, '-');
+    $horizontalProperty: index($list: $positionalProperties, $value: 0);
+    $verticalProperty: index($list: $positionalProperties, $value: 1);
+}

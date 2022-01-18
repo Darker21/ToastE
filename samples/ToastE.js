@@ -1,5 +1,5 @@
 /*!
- * ToastE v1.0.0
+ * ToastE v1.0.0-alpha1
  * (c) 2022-2022 Jacob Darker
  * Released under the MIT License.
  */
@@ -237,6 +237,7 @@
    * @param {HTMLElement} element - The element to fade in
    * @param {Number} duration - The duration of the fade animation
    * @param {Function} callback - The callback function after the animation has completed
+   * @param {Object} callbackParams - The parameters for the callback param
    * @see {@link https://codepen.io/jorgemaiden/pen/xoRKWN}
    */
 
@@ -397,8 +398,6 @@
          */
         function init() {
           var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Options();
-          console.log(opts); // console.log(new Options());
-
           this.prepareOptions(opts, new Options());
           this.process();
         }
@@ -412,7 +411,6 @@
       key: "prepareOptions",
       value: function prepareOptions(options, optionsToExtend) {
         var _options = {};
-        console.log(optionsToExtend);
 
         if (typeof options === "string" || options instanceof Array) {
           _options.text = options;
@@ -472,8 +470,7 @@
         } // Insert Text
 
 
-        this.generateToastText();
-        console.log(this); // Update the Toast styles
+        this.generateToastText(); // Update the Toast styles
 
         this.setToastElementStyles();
       }
@@ -530,18 +527,16 @@
         } // Add Icon
 
 
-        if (this.options.icon !== false) {
+        if (this.options.icon) {
           this._toastEl.classList.add("toaste-has-icon");
 
-          console.log(this.options);
-
-          if (_defaultIcons.findIndex(this.options.icon) > -1) {
+          if (this.options.icon && _defaultIcons.includes(this.options.icon)) {
             this._toastEl.classList.add("toaste-icon-".concat(this.options.icon));
           }
         } // Add custom class
 
 
-        if (this.options.class !== false) {
+        if (this.options.class) {
           this._toastEl.classList.add(this.options.class);
         }
       }
@@ -618,11 +613,11 @@
         }
 
         if (typeof this.options.afterShown === "function") {
-          this._toastEl.addEventListener("toast.on.show", that.options.afterShown(that._toastEl));
+          this._toastEl.addEventListener("toast.on.shown", that.options.afterShown(that._toastEl));
         }
 
         if (typeof this.options.beforeHide === "function") {
-          this._toastEl.addEventListener("toast.on.hide", that.options.afterShown(that._toastEl));
+          this._toastEl.addEventListener("toast.on.hide", that.options.beforeHide(that._toastEl));
         }
 
         if (typeof this.options.afterHidden === "function") {
@@ -704,6 +699,8 @@
       key: "processLoader",
       value: function processLoader() {
         // Show the loader only, if auto-hide is on and loader is demanded
+        console.log('processLoader');
+
         if (!this.canAutoHide() || this.options.loader === false) {
           return false;
         }
@@ -714,36 +711,39 @@
 
         var transitionTime = (this.options.hideAfter - 400) / 1000 + "s";
         var loaderBg = this.options.loaderBg || '';
-        loader.style.setProperty("--toaste-transition-duration", transitionTime + "s");
+        loader.style.setProperty("--toaste-transition-duration", transitionTime);
 
         if (loaderBg) {
           loader.style.setProperty("--toaste-loader-bg", this.options.loaderBg);
         }
+
+        loader.classList.add("toaste-loaded");
       }
     }, {
       key: "animate",
       value: function animate() {
         var that = this;
-        var evBeforeShow = new Event("toaste.on.show");
+        var evBeforeShow = new CustomEvent("toaste.on.show");
         this._toastEl.style.display = 'none';
 
         this._toastEl.dispatchEvent(evBeforeShow);
 
         if (this.options.showHideTransition.toLowerCase() === 'fade') {
           fadeIn(this._toastEl, 400, function () {
-            var afterShown = new Event("toaste.on.shown");
+            var afterShown = new CustomEvent("toast.on.shown");
+            console.log(afterShown);
 
             that._toastEl.dispatchEvent(afterShown);
           });
         } else if (this.options.showHideTransition.toLowerCase() === 'slide') {
           expand(this._toastEl, 400, "UP", function () {
-            var afterShown = new Event("toaste.on.shown");
+            var afterShown = new CustomEvent("toast.on.shown");
 
             that._toastEl.dispatchEvent(afterShown);
           });
         } else {
           expand(this._toastEl, 400, "RIGHT", function () {
-            var afterShown = new Event("toaste.on.shown");
+            var afterShown = new CustomEvent("toast.on.shown");
 
             that._toastEl.dispatchEvent(afterShown);
           });
@@ -763,7 +763,9 @@
             return el.remove();
           });
         } else {
-          this._toastEl.remove();
+          this._toastEl.parentElement.removeChild(this._toastEl);
+
+          this._toastEl = null;
         }
       }
     }, {
@@ -782,18 +784,21 @@
     }, {
       key: "closeToast",
       value: function closeToast(toastEInstance, event) {
+        var _this = this;
+
         if (event) {
           event.preventDefault();
         }
 
-        var evToastHide = new Event("toast.on.hide");
+        var evToastHide = new CustomEvent("toast.on.hide");
 
         if (toastEInstance.options.showHideTransition === "fade") {
           // Dispatch event to trigger any event listeners
           toastEInstance._toastEl.dispatchEvent(evToastHide);
 
           fadeOut(toastEInstance._toastEl, 400, function () {
-            var evToastHidden = new Event("toast.on.hidden");
+            _this._toastEl.style.display = "none";
+            var evToastHidden = new CustomEvent("toast.on.hidden");
 
             toastEInstance._toastEl.dispatchEvent(evToastHidden);
           });
@@ -802,7 +807,8 @@
           toastEInstance._toastEl.dispatchEvent(evToastHide);
 
           slideUp(toastEInstance._toastEl, 400, function () {
-            var evToastHidden = new Event("toast.on.hidden");
+            _this._toastEl.style.display = "none";
+            var evToastHidden = new CustomEvent("toast.on.hidden");
 
             toastEInstance._toastEl.dispatchEvent(evToastHidden);
           });
@@ -811,7 +817,8 @@
           toastEInstance._toastEl.dispatchEvent(evToastHide);
 
           fadeOut(toastEInstance._toastEl, 400, function () {
-            var evToastHidden = new Event("toast.on.hidden");
+            _this._toastEl.style.display = "none";
+            var evToastHidden = new CustomEvent("toast.on.hidden");
 
             toastEInstance._toastEl.dispatchEvent(evToastHidden);
           });

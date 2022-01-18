@@ -1,0 +1,6 @@
+@mixin makePositionVariant($horizontalProperty, $verticalProperty, $horizontalAmount: 40px, $verticalAmount: 20px) {
+    .#{$verticalProperty}-#{$horizontalProperty} {
+        #{$verticalProperty}: $verticalAmount;
+        #{$horizontalProperty}: $horizontalAmount;
+    }
+}

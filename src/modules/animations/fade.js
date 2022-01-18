@@ -18,6 +18,7 @@ function fadeInit(element, startOpacity) {
  * @param {HTMLElement} element - The element to fade in
  * @param {Number} duration - The duration of the fade animation
  * @param {Function} callback - The callback function after the animation has completed
+ * @param {Object} callbackParams - The parameters for the callback param
  * @see {@link https://codepen.io/jorgemaiden/pen/xoRKWN}
  */
 function fadeIn(element, duration, callback = null) {
