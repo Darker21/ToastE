@@ -43,7 +43,7 @@ const _positionClasses = [
 const _defaultIcons = ["success", "error", "info", "warning"];
 
 /**
- * ToastE core class responsible for core functionality
+ * ToastE Notifier core class responsible for core functionality
  * 
  * @module Core
  * @private
@@ -54,8 +54,6 @@ export default class Core {
      * @param {string | string[] | Options()} [opts=Options] The Options object or the toast notification text
      */
     init(opts = new Options()) {
-        console.log(opts);
-        // console.log(new Options());
         this.prepareOptions(opts, new Options());
         this.process();
     }
@@ -67,7 +65,7 @@ export default class Core {
      */
     prepareOptions(options, optionsToExtend) {
         var _options = {};
-        console.log(optionsToExtend);
+
         if (typeof options === "string" || options instanceof Array) {
             _options.text = options;
         } else {
@@ -123,7 +121,6 @@ export default class Core {
         // Insert Text
         this.generateToastText();
 
-        console.log(this);
         // Update the Toast styles
         this.setToastElementStyles();
     }
@@ -176,10 +173,10 @@ export default class Core {
         }
 
         // Add Icon
-        if (this.options.icon !== false) {
+        if (this.options.icon) {
             this._toastEl.classList.add("toaste-has-icon");
-            console.log(this.options);
-            if (_defaultIcons.findIndex(this.options.icon) > -1) {
+
+            if (this.options.icon &amp;&amp; _defaultIcons.includes(this.options.icon)) {
                 this._toastEl.classList.add(
                     `toaste-icon-${this.options.icon}`
                 );
@@ -187,7 +184,7 @@ export default class Core {
         }
 
         // Add custom class
-        if (this.options.class !== false) {
+        if (this.options.class) {
             this._toastEl.classList.add(this.options.class);
         }
     }
@@ -276,7 +273,7 @@ export default class Core {
 
         if (typeof this.options.afterShown === "function") {
             this._toastEl.addEventListener(
-                "toast.on.show",
+                "toast.on.shown",
                 that.options.afterShown(that._toastEl)
             );
         }
@@ -284,7 +281,7 @@ export default class Core {
         if (typeof this.options.beforeHide === "function") {
             this._toastEl.addEventListener(
                 "toast.on.hide",
-                that.options.afterShown(that._toastEl)
+                that.options.beforeHide(that._toastEl)
             );
         }
 
@@ -380,42 +377,48 @@ export default class Core {
         var transitionTime = (this.options.hideAfter - 400) / 1000 + "s";
         var loaderBg = this.options.loaderBg || '';
 
-        loader.style.setProperty("--toaste-transition-duration", transitionTime + "s");
+        loader.style.setProperty("--toaste-transition-duration", transitionTime);
 
         if (loaderBg) {
             loader.style.setProperty("--toaste-loader-bg", this.options.loaderBg);
         }
+
+        loader.classList.add("toaste-loaded");
     }
 
 
     animate() {
         var that = this;
-        var evBeforeShow = new Event("toaste.on.show");
+        var evBeforeShow = new CustomEvent("toaste.on.show");
+
+        var afterShown = function () {
+            var afterShown = new CustomEvent("toast.on.shown");
+            that._toastEl.dispatchEvent(afterShown);
+        };
 
         this._toastEl.style.display = 'none';
 
         this._toastEl.dispatchEvent(evBeforeShow);
 
         if (this.options.showHideTransition.toLowerCase() === 'fade') {
-            fadeIn(this._toastEl, 400, function () {
-                var afterShown = new Event("toaste.on.shown");
-                that._toastEl.dispatchEvent(afterShown);
-            });
+            fadeIn(this._toastEl, 400, afterShown);
         } else if (this.options.showHideTransition.toLowerCase() === 'slide') {
-            expand(this._toastEl, 400, "UP", function () {
-                var afterShown = new Event("toaste.on.shown");
-                that._toastEl.dispatchEvent(afterShown);
-            });
+            // expand(this._toastEl, 400, "UP", function () {
+            //     var afterShown = new CustomEvent("toast.on.shown");
+            //     that._toastEl.dispatchEvent(afterShown);
+            // });
+            fadeIn(this._toastEl, 400, afterShown);
         } else {
-            expand(this._toastEl, 400, "RIGHT", function () {
-                var afterShown = new Event("toaste.on.shown");
-                that._toastEl.dispatchEvent(afterShown);
-            });
+            // expand(this._toastEl, 400, "RIGHT", function () {
+            //     var afterShown = new CustomEvent("toast.on.shown");
+            //     that._toastEl.dispatchEvent(afterShown);
+            // });
+            fadeIn(this._toastEl, 400, afterShown);
         }
 
         if (this.canAutoHide()) {
 
-            window.setTimeout(this.closeToast.bind(this, that), +this.options.hideAfter);
+            this.autoCloseTimeout = window.setTimeout(this.closeToast.bind(this, that), +this.options.hideAfter);
         }
     }
 
@@ -423,7 +426,8 @@ export default class Core {
         if (all) {
             document.querySelectorAll('.toaste-wrap').forEach(el => el.remove());
         } else {
-            this._toastEl.remove();
+            this._toastEl.parentElement.removeChild(this._toastEl);
+            this._toastEl = null;
         }
     }
 
@@ -444,29 +448,26 @@ export default class Core {
             event.preventDefault();
         }
 
-        var evToastHide = new Event("toast.on.hide");
+        const animationEnd = function () {
+            toastEInstance._toastEl.style.display = "none";
+            var evToastHidden = new CustomEvent("toast.on.hidden");
+            toastEInstance._toastEl.dispatchEvent(evToastHidden);
+            if (toastEInstance.autoCloseTimeout) {
+                window.clearTimeout(toastEInstance.autoCloseTimeout);
+            }
+        };
+
+        // Dispatch event to trigger any event listeners
+        var evToastHide = new CustomEvent("toast.on.hide");
+        toastEInstance._toastEl.dispatchEvent(evToastHide);
 
         if (toastEInstance.options.showHideTransition === "fade") {
-            // Dispatch event to trigger any event listeners
-            toastEInstance._toastEl.dispatchEvent(evToastHide);
-            fadeOut(toastEInstance._toastEl, 400, () => {
-                var evToastHidden = new Event("toast.on.hidden");
-                toastEInstance._toastEl.dispatchEvent(evToastHidden);
-            });
+            fadeOut(toastEInstance._toastEl, 400, animationEnd);
         } else if (toastEInstance.options.showHideTransition === "slide") {
-            // Dispatch event to trigger any event listeners
-            toastEInstance._toastEl.dispatchEvent(evToastHide);
-            slideUp(toastEInstance._toastEl, 400, () => {
-                var evToastHidden = new Event("toast.on.hidden");
-                toastEInstance._toastEl.dispatchEvent(evToastHidden);
-            });
+            // slideUp(toastEInstance._toastEl, 400, animationEnd);
+            fadeOut(toastEInstance._toastEl, 400, animationEnd);
         } else {
-            // Dispatch event to trigger any event listeners
-            toastEInstance._toastEl.dispatchEvent(evToastHide);
-            fadeOut(toastEInstance._toastEl, 400, () => {
-                var evToastHidden = new Event("toast.on.hidden");
-                toastEInstance._toastEl.dispatchEvent(evToastHidden);
-            });
+            fadeOut(toastEInstance._toastEl, 400, animationEnd);
         }
     }
 }</code></pre>
@@ -479,13 +480,13 @@ export default class Core {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ToastE.html">ToastE</a></li></ul><h3>Classes</h3><ul><li><a href="module-ToastE.html">ToastE</a></li><li><a href="Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#collapse">collapse</a></li><li><a href="global.html#expand">expand</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#fadeOut">fadeOut</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ToastE-Notifier.html">ToastE-Notifier</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li><li><a href="module-ToastE-Notifier.html">ToastE-Notifier</a></li></ul><h3>Global</h3><ul><li><a href="global.html#collapse">collapse</a></li><li><a href="global.html#expand">expand</a></li><li><a href="global.html#extend">extend</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#fadeOut">fadeOut</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jan 17 2022 21:08:01 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jan 19 2022 12:10:42 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>

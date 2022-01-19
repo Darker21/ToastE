@@ -750,7 +750,7 @@
         }
 
         if (this.canAutoHide()) {
-          window.setTimeout(this.closeToast.bind(this, that), +this.options.hideAfter);
+          this.autoCloseTimeout = window.setTimeout(this.closeToast.bind(this, that), +this.options.hideAfter);
         }
       }
     }, {
@@ -784,44 +784,32 @@
     }, {
       key: "closeToast",
       value: function closeToast(toastEInstance, event) {
-        var _this = this;
-
         if (event) {
           event.preventDefault();
         }
 
+        var animationEnd = function animationEnd() {
+          toastEInstance._toastEl.style.display = "none";
+          var evToastHidden = new CustomEvent("toast.on.hidden");
+
+          toastEInstance._toastEl.dispatchEvent(evToastHidden);
+
+          if (toastEInstance.autoCloseTimeout) {
+            window.clearTimeout(toastEInstance.autoCloseTimeout);
+          }
+        }; // Dispatch event to trigger any event listeners
+
+
         var evToastHide = new CustomEvent("toast.on.hide");
 
+        toastEInstance._toastEl.dispatchEvent(evToastHide);
+
         if (toastEInstance.options.showHideTransition === "fade") {
-          // Dispatch event to trigger any event listeners
-          toastEInstance._toastEl.dispatchEvent(evToastHide);
-
-          fadeOut(toastEInstance._toastEl, 400, function () {
-            _this._toastEl.style.display = "none";
-            var evToastHidden = new CustomEvent("toast.on.hidden");
-
-            toastEInstance._toastEl.dispatchEvent(evToastHidden);
-          });
+          fadeOut(toastEInstance._toastEl, 400, animationEnd);
         } else if (toastEInstance.options.showHideTransition === "slide") {
-          // Dispatch event to trigger any event listeners
-          toastEInstance._toastEl.dispatchEvent(evToastHide);
-
-          slideUp(toastEInstance._toastEl, 400, function () {
-            _this._toastEl.style.display = "none";
-            var evToastHidden = new CustomEvent("toast.on.hidden");
-
-            toastEInstance._toastEl.dispatchEvent(evToastHidden);
-          });
+          slideUp(toastEInstance._toastEl, 400, animationEnd);
         } else {
-          // Dispatch event to trigger any event listeners
-          toastEInstance._toastEl.dispatchEvent(evToastHide);
-
-          fadeOut(toastEInstance._toastEl, 400, function () {
-            _this._toastEl.style.display = "none";
-            var evToastHidden = new CustomEvent("toast.on.hidden");
-
-            toastEInstance._toastEl.dispatchEvent(evToastHidden);
-          });
+          fadeOut(toastEInstance._toastEl, 400, animationEnd);
         }
       }
     }]);

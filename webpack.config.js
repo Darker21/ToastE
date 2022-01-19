@@ -2,14 +2,14 @@ const path = require('path');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
-    entry: [path.resolve(__dirname, 'src/ToastE.js')],
+    entry: [path.resolve(__dirname, 'src/toaste-notifier.js')],
     mode: 'production',
     output: {
-        library: 'ToastE',
+        library: 'Toaste-Notifier',
         libraryTarget: 'umd',
         umdNamedDefine: false,
         path: path.resolve(__dirname, 'dist/'),
-        filename: 'ToastE.amd.js'
+        filename: 'toaste-notifier.amd.js'
     },
     module: {
         rules: [

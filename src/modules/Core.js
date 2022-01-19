@@ -15,7 +15,7 @@ const _positionClasses = [
 const _defaultIcons = ["success", "error", "info", "warning"];
 
 /**
- * ToastE core class responsible for core functionality
+ * ToastE Notifier core class responsible for core functionality
  * 
  * @module Core
  * @private
@@ -338,7 +338,6 @@ export default class Core {
 
     processLoader() {
         // Show the loader only, if auto-hide is on and loader is demanded
-        console.log('processLoader');
         if (!this.canAutoHide() || this.options.loader === false) {
             return false;
         }
@@ -364,31 +363,34 @@ export default class Core {
         var that = this;
         var evBeforeShow = new CustomEvent("toaste.on.show");
 
+        var afterShown = function () {
+            var afterShown = new CustomEvent("toast.on.shown");
+            that._toastEl.dispatchEvent(afterShown);
+        };
+
         this._toastEl.style.display = 'none';
 
         this._toastEl.dispatchEvent(evBeforeShow);
 
         if (this.options.showHideTransition.toLowerCase() === 'fade') {
-            fadeIn(this._toastEl, 400, function () {
-                var afterShown = new CustomEvent("toast.on.shown");
-                console.log(afterShown);
-                that._toastEl.dispatchEvent(afterShown);
-            });
+            fadeIn(this._toastEl, 400, afterShown);
         } else if (this.options.showHideTransition.toLowerCase() === 'slide') {
-            expand(this._toastEl, 400, "UP", function () {
-                var afterShown = new CustomEvent("toast.on.shown");
-                that._toastEl.dispatchEvent(afterShown);
-            });
+            // expand(this._toastEl, 400, "UP", function () {
+            //     var afterShown = new CustomEvent("toast.on.shown");
+            //     that._toastEl.dispatchEvent(afterShown);
+            // });
+            fadeIn(this._toastEl, 400, afterShown);
         } else {
-            expand(this._toastEl, 400, "RIGHT", function () {
-                var afterShown = new CustomEvent("toast.on.shown");
-                that._toastEl.dispatchEvent(afterShown);
-            });
+            // expand(this._toastEl, 400, "RIGHT", function () {
+            //     var afterShown = new CustomEvent("toast.on.shown");
+            //     that._toastEl.dispatchEvent(afterShown);
+            // });
+            fadeIn(this._toastEl, 400, afterShown);
         }
 
         if (this.canAutoHide()) {
 
-            window.setTimeout(this.closeToast.bind(this, that), +this.options.hideAfter);
+            this.autoCloseTimeout = window.setTimeout(this.closeToast.bind(this, that), +this.options.hideAfter);
         }
     }
 
@@ -418,32 +420,26 @@ export default class Core {
             event.preventDefault();
         }
 
+        const animationEnd = function () {
+            toastEInstance._toastEl.style.display = "none";
+            var evToastHidden = new CustomEvent("toast.on.hidden");
+            toastEInstance._toastEl.dispatchEvent(evToastHidden);
+            if (toastEInstance.autoCloseTimeout) {
+                window.clearTimeout(toastEInstance.autoCloseTimeout);
+            }
+        };
+
+        // Dispatch event to trigger any event listeners
         var evToastHide = new CustomEvent("toast.on.hide");
+        toastEInstance._toastEl.dispatchEvent(evToastHide);
 
         if (toastEInstance.options.showHideTransition === "fade") {
-            // Dispatch event to trigger any event listeners
-            toastEInstance._toastEl.dispatchEvent(evToastHide);
-            fadeOut(toastEInstance._toastEl, 400, () => {
-                this._toastEl.style.display = "none";
-                var evToastHidden = new CustomEvent("toast.on.hidden");
-                toastEInstance._toastEl.dispatchEvent(evToastHidden);
-            });
+            fadeOut(toastEInstance._toastEl, 400, animationEnd);
         } else if (toastEInstance.options.showHideTransition === "slide") {
-            // Dispatch event to trigger any event listeners
-            toastEInstance._toastEl.dispatchEvent(evToastHide);
-            slideUp(toastEInstance._toastEl, 400, () => {
-                this._toastEl.style.display = "none";
-                var evToastHidden = new CustomEvent("toast.on.hidden");
-                toastEInstance._toastEl.dispatchEvent(evToastHidden);
-            });
+            // slideUp(toastEInstance._toastEl, 400, animationEnd);
+            fadeOut(toastEInstance._toastEl, 400, animationEnd);
         } else {
-            // Dispatch event to trigger any event listeners
-            toastEInstance._toastEl.dispatchEvent(evToastHide);
-            fadeOut(toastEInstance._toastEl, 400, () => {
-                this._toastEl.style.display = "none";
-                var evToastHidden = new CustomEvent("toast.on.hidden");
-                toastEInstance._toastEl.dispatchEvent(evToastHidden);
-            });
+            fadeOut(toastEInstance._toastEl, 400, animationEnd);
         }
     }
 }

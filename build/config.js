@@ -24,29 +24,29 @@ const banner =
 
 const builds = {
     'web-cjs': {
-        entry: resolvePath('src/ToastE.js'),
-        dest: resolvePath('dist/ToastE.cjs'),
+        entry: resolvePath('src/toaste-notifier.js'),
+        dest: resolvePath('dist/toaste-notifier.cjs'),
         format: 'cjs',
         env: 'production',
         banner
     },
     'web-esm': {
-        entry: resolvePath('src/ToastE.js'),
-        dest: resolvePath('dist/ToastE.esm.js'),
+        entry: resolvePath('src/toaste-notifier.js'),
+        dest: resolvePath('dist/toaste-notifier.esm.js'),
         format: 'es',
         env: 'production',
         banner
     },
     'web-umd-dev': {
-        entry: resolvePath('src/ToastE.js'),
-        dest: resolvePath('dist/ToastE.js'),
+        entry: resolvePath('src/toaste-notifier.js'),
+        dest: resolvePath('dist/toaste-notifier.js'),
         format: 'umd',
         env: 'development',
         banner
     },
     'web-umd-prod': {
-        entry: resolvePath('src/ToastE.js'),
-        dest: resolvePath('dist/ToastE.min.js'),
+        entry: resolvePath('src/toaste-notifier.js'),
+        dest: resolvePath('dist/toaste-notifier.min.js'),
         format: 'umd',
         env: 'production',
         banner,
@@ -62,7 +62,7 @@ function rollupConfig(opts) {
     const config = {
         input: opts.entry,
         plugins: [
-            resolve(),
+            resolve,
             json({
                 preferConst: true
             }),
@@ -85,7 +85,7 @@ function rollupConfig(opts) {
             file: opts.dest,
             format: opts.format,
             banner: opts.banner,
-            name: 'ToastE'
+            name: 'ToastE-Notifier'
         }
     };
 
@@ -143,7 +143,7 @@ async function executeBuildEntry(options) {
     return {
         path: config.output.file,
         code: generated.output[0].code,
-        isDev: /ToastE\.js$/.test(config.output.file)
+        isDev: /toaste-notifier\.js$/.test(config.output.file)
     };
 }
 

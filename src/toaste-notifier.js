@@ -3,9 +3,9 @@ import Core from './modules/Core';
 /**
  * Wrapper module to expose public functionality
  * 
- * @module ToastE
+ * @module ToastE-Notifier
  */
-export default class ToastE {
+export default class ToastENotifier {
     /**
      * Creates and displays a ToastE Notification
      * @param {Options} options The ToastE notification options
