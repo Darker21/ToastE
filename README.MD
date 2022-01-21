@@ -1,11 +1,11 @@
-# ToastE
+# ToastE-Notifier
 
 ![Built with JavaScript](https://img.shields.io/badge/Built%20with-JavaScript-red?style=flat&logo=javascript)
 [![Maintainability](https://api.codeclimate.com/v1/badges/b177b2a2328c204635b2/maintainability)](https://codeclimate.com/github/Darker21/ToastE/maintainability)
 [![TechnicalDebt](https://badgen.net/codeclimate/tech-debt/Darker21/ToastE)](https://codeclimate.com/github/Darker21/ToastE)
 ![License](https://badgen.net/badge/license/MIT/blue)
 ![[CircleCI](https://circleci.com/gh/Darker21/ToastE/tree/main.svg?style=shield)](https://img.shields.io/circleci/build/github/Darker21/ToastE/main?logo=circleci)
-[![node-current](https://img.shields.io/node/v/toaste-notifier?label=npm&logo=npm)](https://npmjs.com)
+[![npm](https://img.shields.io/npm/v/toaste-notifier?logo=npm)](https://www.npmjs.com/package/toaste-notifier)
 
 ## About
 
@@ -26,12 +26,12 @@ As part of the transpiling, I included some minor changes, including:
 - You can install the plugin via `npm`
   
     ```js
-    npm install jquery-toast-plugin
+    npm install --save toaste-notification
     ```
   
     Or directly download the repository and place the content of `dist` wherever you can access them.
 - Include the CSS and JS files.
-- Simply do ```$.toast('Toast message to be shown')``` Of course it would be the world's simplest toast message but believe me **you can do a lot more** with the options.
+- Simply do ```new ToastENotifier('Toast message to be shown')``` Of course it would be the world's simplest toast message but believe me **you can do a lot more** with the options.
 
 ## Examples
 
