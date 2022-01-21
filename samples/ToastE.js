@@ -1,13 +1,13 @@
 /*!
- * ToastE v1.0.0-alpha1
+ * ToastE v1.0.0-alpha3
  * (c) 2022-2022 Jacob Darker
  * Released under the MIT License.
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
-      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.ToastE = factory());
-}(this, (function () {
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global["ToastE-Notifier"] = factory());
+})(this, (function () {
   'use strict';
 
   function _typeof(obj) {
@@ -291,62 +291,6 @@
     tick();
   }
 
-  // Convert this css to JS https://jsfiddle.net/cferdinandi/qgpxvhhb/23/
-  /**
-   * Expand an HTMLElement in a particular direction
-   * @param {HTMLElement} element Element to animate the expansion
-   * @param {Number} duration The duration of the expand animation (milliseconds)
-   * @param {string} direction The direction to expand the object (allowed-values: 'UP', 'DOWN', 'LEFT', 'RIGHT')
-   * @param {Function} [callback=null] The callback function to run after element has been completely expanded
-   */
-
-  function expand(element, duration, direction) {
-    var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-    direction = direction.toUpperCase() || "UP"; // Call relevant function based on the direction passed
-
-    if (direction === "UP" || direction === "DOWN") {
-      expandVertical(element, duration, direction, callback);
-    }
-  }
-
-  function expandVertical(element, duration, direction) {
-    var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-    element.style.display = '';
-    element.style.height = 0;
-    var elementMaxHeight = getElementHeight(element);
-    var last = +new Date();
-
-    var tick = function tick() {
-      element.style.height = +element.style.height + (new Date() - last) / duration;
-      last = +new Date();
-
-      if (+element.style.height < elementMaxHeight) {
-        window.requestAnimationFrame && requestAnimationFrame(tick) || setTimeout(tick, 16);
-      } else {
-        element.style.height = 'auto';
-
-        if (callback) {
-          callback.call();
-        }
-      }
-    };
-
-    tick();
-  }
-
-  function parsePixelValue(value) {
-    var output = value;
-    output = output.replace("px", "");
-    return +output;
-  }
-
-  function getElementHeight(element) {
-    element.style.display = "block";
-    var elementHeight = element.scrollHeight;
-    element.style.display = 'none';
-    return parsePixelValue(elementHeight);
-  }
-
   var Options = /*#__PURE__*/_createClass(function Options() {
     _classCallCheck(this, Options);
 
@@ -378,7 +322,7 @@
   var _positionClasses = ["bottom-left", "bottom-right", "top-right", "top-left", "bottom-center", "top-center", "mid-center"];
   var _defaultIcons = ["success", "error", "info", "warning"];
   /**
-   * ToastE core class responsible for core functionality
+   * ToastE Notifier core class responsible for core functionality
    * 
    * @module Core
    * @private
@@ -455,7 +399,6 @@
         if (this.options.allowToastClose) {
           var toastCloseIcon = document.createElement("span");
           toastCloseIcon.className = "toaste-close";
-          toastCloseIcon.innerText = "&times;";
 
           this._toastEl.appendChild(toastCloseIcon);
         } // Insert Header
@@ -699,8 +642,6 @@
       key: "processLoader",
       value: function processLoader() {
         // Show the loader only, if auto-hide is on and loader is demanded
-        console.log('processLoader');
-
         if (!this.canAutoHide() || this.options.loader === false) {
           return false;
         }
@@ -724,29 +665,31 @@
       value: function animate() {
         var that = this;
         var evBeforeShow = new CustomEvent("toaste.on.show");
+
+        var afterShown = function afterShown() {
+          var afterShown = new CustomEvent("toast.on.shown");
+
+          that._toastEl.dispatchEvent(afterShown);
+        };
+
         this._toastEl.style.display = 'none';
 
         this._toastEl.dispatchEvent(evBeforeShow);
 
         if (this.options.showHideTransition.toLowerCase() === 'fade') {
-          fadeIn(this._toastEl, 400, function () {
-            var afterShown = new CustomEvent("toast.on.shown");
-            console.log(afterShown);
-
-            that._toastEl.dispatchEvent(afterShown);
-          });
+          fadeIn(this._toastEl, 400, afterShown);
         } else if (this.options.showHideTransition.toLowerCase() === 'slide') {
-          expand(this._toastEl, 400, "UP", function () {
-            var afterShown = new CustomEvent("toast.on.shown");
-
-            that._toastEl.dispatchEvent(afterShown);
-          });
+          // expand(this._toastEl, 400, "UP", function () {
+          //     var afterShown = new CustomEvent("toast.on.shown");
+          //     that._toastEl.dispatchEvent(afterShown);
+          // });
+          fadeIn(this._toastEl, 400, afterShown);
         } else {
-          expand(this._toastEl, 400, "RIGHT", function () {
-            var afterShown = new CustomEvent("toast.on.shown");
-
-            that._toastEl.dispatchEvent(afterShown);
-          });
+          // expand(this._toastEl, 400, "RIGHT", function () {
+          //     var afterShown = new CustomEvent("toast.on.shown");
+          //     that._toastEl.dispatchEvent(afterShown);
+          // });
+          fadeIn(this._toastEl, 400, afterShown);
         }
 
         if (this.canAutoHide()) {
@@ -807,7 +750,8 @@
         if (toastEInstance.options.showHideTransition === "fade") {
           fadeOut(toastEInstance._toastEl, 400, animationEnd);
         } else if (toastEInstance.options.showHideTransition === "slide") {
-          slideUp(toastEInstance._toastEl, 400, animationEnd);
+          // slideUp(toastEInstance._toastEl, 400, animationEnd);
+          fadeOut(toastEInstance._toastEl, 400, animationEnd);
         } else {
           fadeOut(toastEInstance._toastEl, 400, animationEnd);
         }
@@ -820,16 +764,16 @@
   /**
    * Wrapper module to expose public functionality
    * 
-   * @module ToastE
+   * @module ToastE-Notifier
    */
 
-  var ToastE = /*#__PURE__*/function () {
+  var ToastENotifier = /*#__PURE__*/function () {
     /**
      * Creates and displays a ToastE Notification
      * @param {Options} options The ToastE notification options
      */
-    function ToastE(options) {
-      _classCallCheck(this, ToastE);
+    function ToastENotifier(options) {
+      _classCallCheck(this, ToastENotifier);
 
       this.toastE = new Core();
       this.toastE.init(options);
@@ -840,7 +784,7 @@
      */
 
 
-    _createClass(ToastE, [{
+    _createClass(ToastENotifier, [{
       key: "reset",
       value: function reset(option) {
         this.toastE.reset(option);
@@ -866,9 +810,13 @@
       }
     }]);
 
-    return ToastE;
+    return ToastENotifier;
   }();
 
-  return ToastE;
+  if (typeof window !== 'undefined') {
+    window.ToastENotifier = ToastENotifier;
+  }
 
-})));
+  return ToastENotifier;
+
+}));

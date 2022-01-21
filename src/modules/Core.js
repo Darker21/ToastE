@@ -77,7 +77,6 @@ export default class Core {
         if (this.options.allowToastClose) {
             let toastCloseIcon = document.createElement("span");
             toastCloseIcon.className = "toaste-close";
-            toastCloseIcon.innerText = "&times;";
 
             this._toastEl.appendChild(toastCloseIcon);
         }

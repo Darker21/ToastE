@@ -5,7 +5,7 @@ import Core from './modules/Core';
  * 
  * @module ToastE-Notifier
  */
-export default class ToastENotifier {
+class ToastENotifier {
     /**
      * Creates and displays a ToastE Notification
      * @param {Options} options The ToastE notification options
@@ -38,3 +38,9 @@ export default class ToastENotifier {
         this.toastE.close();
     }
 }
+
+if (typeof window !== 'undefined') {
+    window.ToastENotifier = ToastENotifier;
+}
+
+export default ToastENotifier;

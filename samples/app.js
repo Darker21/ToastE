@@ -19,8 +19,8 @@ NotificationApp.prototype.send = function (heading, body, position, loaderBgColo
         options.showHideTransition = "fade";
     }
 
-    new ToastE().reset('all');
-    new ToastE(options);
+    new ToastENotifier().reset('all');
+    new ToastENotifier(options);
 };
 
 window.NotificationApp = new NotificationApp;

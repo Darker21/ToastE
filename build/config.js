@@ -17,7 +17,7 @@ const resolvePath = (p) => path.resolve(__dirname, '../', p);
 
 const banner =
     '/*!\n' +
-    ` * ToastE v${version}\n` +
+    ` * ToastE-Notifier v${version}\n` +
     ` * (c) 2022-${new Date().getFullYear()} ${author}\n` +
     ' * Released under the MIT License.\n' +
     ' */';
@@ -112,7 +112,7 @@ function rollupConfig(opts) {
             copy(
                 [
                     {
-                        files: 'src/assets/css/toaste.*.css*',
+                        files: 'src/assets/css/toaste-notifier.*.css*',
                         dest: 'dist/css'
                     },
                     {

@@ -1,5 +1,5 @@
 /*!
- * ToastE v1.0.0-alpha1
+ * ToastE-Notifier v1.0.0-alpha4
  * (c) 2022-2022 Jacob Darker
  * Released under the MIT License.
  */
@@ -398,7 +398,6 @@
         if (this.options.allowToastClose) {
           var toastCloseIcon = document.createElement("span");
           toastCloseIcon.className = "toaste-close";
-          toastCloseIcon.innerText = "&times;";
 
           this._toastEl.appendChild(toastCloseIcon);
         } // Insert Header
@@ -812,6 +811,10 @@
 
     return ToastENotifier;
   }();
+
+  if (typeof window !== 'undefined') {
+    window.ToastENotifier = ToastENotifier;
+  }
 
   return ToastENotifier;
 
