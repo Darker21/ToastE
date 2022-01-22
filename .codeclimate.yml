@@ -28,6 +28,9 @@ plugins:
     enabled: true
   scss-lint:
     enabled: true
+  eslint:
+    enabled: true
+    channel: "eslint-8"
 exclude_patterns:
   - 'config/'
   - 'db/'
@@ -45,3 +48,4 @@ exclude_patterns:
   - '**/*_test.go'
   - 'src/modules/settings/Options.js'
   - 'build/config.js'
+  - 'docs/**'
