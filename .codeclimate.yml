@@ -28,7 +28,7 @@ plugins:
     enabled: true
   scss-lint:
     enabled: true
-  es-lint:
+  eslint:
     enabled: true
     channel: "eslint-8"
 exclude_patterns:
