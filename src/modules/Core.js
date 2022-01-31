@@ -374,17 +374,9 @@ export default class Core {
         if (this.options.showHideTransition.toLowerCase() === 'fade') {
             fadeIn(this._toastEl, 400, afterShown);
         } else if (this.options.showHideTransition.toLowerCase() === 'slide') {
-            // expand(this._toastEl, 400, "UP", function () {
-            //     var afterShown = new CustomEvent("toast.on.shown");
-            //     that._toastEl.dispatchEvent(afterShown);
-            // });
-            fadeIn(this._toastEl, 400, afterShown);
+            expand(this._toastEl, 400, "UP", afterShown);
         } else {
-            // expand(this._toastEl, 400, "RIGHT", function () {
-            //     var afterShown = new CustomEvent("toast.on.shown");
-            //     that._toastEl.dispatchEvent(afterShown);
-            // });
-            fadeIn(this._toastEl, 400, afterShown);
+            expand(this._toastEl, 400, "RIGHT", afterShown);
         }
 
         if (this.canAutoHide()) {
@@ -435,10 +427,11 @@ export default class Core {
         if (toastEInstance.options.showHideTransition === "fade") {
             fadeOut(toastEInstance._toastEl, 400, animationEnd);
         } else if (toastEInstance.options.showHideTransition === "slide") {
-            // slideUp(toastEInstance._toastEl, 400, animationEnd);
-            fadeOut(toastEInstance._toastEl, 400, animationEnd);
+            collapse(toastEInstance._toastEl, 400, "DOWN", animationEnd);
+            // fadeOut(toastEInstance._toastEl, 400, animationEnd);
         } else {
-            fadeOut(toastEInstance._toastEl, 400, animationEnd);
+            collapse(toastEInstance._toastEl, 400, "LEFT", animationEnd);
+            // fadeOut(toastEInstance._toastEl, 400, animationEnd);
         }
     }
 }

@@ -133,15 +133,125 @@
     };
   }
 
+  var _cssUnits = ["cm", "mm", "in", "px", "pt", "pc", "em", "ex", "ch", "rem", "vw", "vh", "vmin", "vmax", "%"];
+
+  var _reCssUnits = new RegExp(_cssUnits.join("|"), "g");
   /**
    * Generic functions which are not dependent on ToastE
-   */
+  */
+
+
   var Utils = /*#__PURE__*/function () {
     function Utils() {
       _classCallCheck(this, Utils);
     }
 
     _createClass(Utils, null, [{
+      key: "getElementMaxWidth",
+      value:
+      /**
+       * Calculates the max width of the element
+       * @param {HTMLElement} element The element to calculate the width of
+       * @param {Boolean} removePaddingMarginBorder Should the margin, padding and border be included in calculation
+       * @param {string} psuedoSelector The psuedo-selector for calculation of child element
+       * @returns {Number} The outerWidth of the element
+       */
+      function getElementMaxWidth(element) {
+        var removePaddingMarginBorder = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+        var psuedoSelector = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+        // Display block so it can expand fully
+        element.style.display = "block";
+        var elementWidth = element.scrollWidth;
+        element.style.display = ""; // Get numeric value to do math with
+
+        elementWidth = this.parseCssValue(elementWidth); // calculate the box computed elements joined width
+
+        var paddingMarginBorderValue = 0;
+
+        if (removePaddingMarginBorder) {
+          var padding = this.getComputedPaddingDimensions(element, psuedoSelector);
+          paddingMarginBorderValue += padding.left + padding.right;
+          var margin = this.getComputedMarginDimensions(element, psuedoSelector);
+          paddingMarginBorderValue += margin.left + margin.right;
+          var border = this.getComputedBorderDimensions(element, psuedoSelector);
+          paddingMarginBorderValue += border.left + border.right;
+        }
+
+        return elementWidth + paddingMarginBorderValue;
+      }
+    }, {
+      key: "getComputedBorderDimensions",
+      value: function getComputedBorderDimensions(element) {
+        var psuedoSelector = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+
+        if (psuedoSelector && !psuedoSelector.startsWith(":")) {
+          psuedoSelector = ":" + psuedoSelector;
+        }
+
+        var elementStyle = window.getComputedStyle(element, psuedoSelector || null);
+        var borders = elementStyle.borderWidth.split(" ");
+        return this.mapElementBoxValuesToObject(borders);
+      }
+    }, {
+      key: "getComputedMarginDimensions",
+      value: function getComputedMarginDimensions(element) {
+        var psuedoSelector = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+
+        if (psuedoSelector && !psuedoSelector.startsWith(":")) {
+          psuedoSelector = ":" + psuedoSelector;
+        }
+
+        var elementStyle = window.getComputedStyle(element, psuedoSelector || null);
+        var margins = elementStyle.margin.split(" ");
+        return this.mapElementBoxValuesToObject(margins);
+      }
+    }, {
+      key: "getComputedPaddingDimensions",
+      value: function getComputedPaddingDimensions(element) {
+        var psuedoSelector = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+
+        if (psuedoSelector && !psuedoSelector.startsWith(":")) {
+          psuedoSelector = ":" + psuedoSelector;
+        }
+
+        var elementStyle = window.getComputedStyle(element, psuedoSelector || null);
+        var paddings = elementStyle.padding.split(" ");
+        return this.mapElementBoxValuesToObject(paddings);
+      }
+    }, {
+      key: "mapElementBoxValuesToObject",
+      value: function mapElementBoxValuesToObject(values) {
+        var _this = this;
+
+        values.forEach(function (value, index) {
+          values[index] = _this.parseCssValue(value);
+        });
+
+        if (values.length === 1) {
+          while (values.length < 4) {
+            values[values.length] = values[0];
+          }
+        } else if (values.length === 2) {
+          values[2] = 0;
+          values[3] = 1;
+        }
+
+        return {
+          top: values[0],
+          right: values[1],
+          bottom: values[2],
+          left: values[3]
+        };
+      }
+    }, {
+      key: "parseCssValue",
+      value: function parseCssValue(value) {
+        var outputValue = value.toString(); // use regex replaceAll for ios compatability
+
+        outputValue = outputValue.replaceAll(_reCssUnits, "");
+        return +outputValue || 0;
+      }
+    }, {
       key: "bind",
       value: function bind(fn, me) {
         return function () {
@@ -163,7 +273,7 @@
     }, {
       key: "extend",
       value: function extend(target, source) {
-        var _this = this;
+        var _this2 = this;
 
         // credit: http://stackoverflow.com/questions/27936772/deep-object-merging-in-es6-es7#answer-34749873
         if (typeof Object.assign !== 'function') {
@@ -198,11 +308,11 @@
 
         if (this.isObject(target) && this.isObject(source)) {
           Object.keys(source).forEach(function (key) {
-            if (_this.isObject(source[key])) {
+            if (_this2.isObject(source[key])) {
               if (!(key in target)) {
                 Object.assign(output, _defineProperty({}, key, source[key]));
               } else {
-                output[key] = _this.extend(target[key], source[key]);
+                output[key] = _this2.extend(target[key], source[key]);
               }
             } else {
               Object.assign(output, _defineProperty({}, key, source[key]));
@@ -288,6 +398,134 @@
     };
 
     tick();
+  }
+
+  // Convert this css to JS https://jsfiddle.net/cferdinandi/qgpxvhhb/23/
+  var _transitionEnd3;
+  /**
+   * Expand an HTMLElement in a particular direction
+   * @param {HTMLElement} element Element to animate the expansion
+   * @param {Number} duration The duration of the expand animation (milliseconds)
+   * @param {string} direction The direction to expand the object (allowed-values: 'UP', 'DOWN', 'LEFT', 'RIGHT')
+   * @param {Function} [callback=null] The callback function to run after element has been completely expanded
+   */
+
+
+  function expand(element, duration, direction) {
+    var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    direction = direction.toUpperCase() || "UP";
+    element.setAttribute("data-direction", direction);
+    element.classList.add("expand"); // Call relevant function based on the direction passed
+
+    if (direction === "UP" || direction === "DOWN") {
+      expandVertical(element, duration, callback);
+    }
+  }
+  /**
+   * Collapse an HTMLElement in a particular direction
+   * @param {HTMLElement} element Element to animate with the collapse
+   * @param {Number} duration The duration of the collapse animation (milliseconds)
+   * @param {string} direction The direction to collapse the object (allowed-values: 'UP', 'DOWN', 'LEFT', 'RIGHT')
+   * @param {Function} [callback=null] The callback function to run after element has been completely collapsed
+   */
+
+
+  function collapse(element, duration, direction) {
+    var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    // Set data-direction attribute for element
+    direction = direction.toUpperCase();
+
+    if (!element.getAttribute("data-direction")) {
+      element.setAttribute("data-direction", direction);
+    }
+
+    element.style.setProperty("--transition-duration", duration + "ms"); // Call relevant function based on the direction passed
+
+    if (direction === "UP" || direction === "DOWN") {
+      collapseVertical(element, duration, callback);
+    }
+  }
+
+  function expandVertical(element, duration) {
+    var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    // set start props
+    element.style.height = "0px";
+    element.classList.add("is-visible"); // Set the transition end function
+
+    _transitionEnd3 = function _transitionEnd(ev) {
+      // Remove the end transition to prevent extra calls on hide
+      ev.target.removeEventListener("transitionend", _transitionEnd3);
+
+      if (callback) {
+        callback.call();
+      }
+    }; // Register the transitionend function
+
+
+    element.addEventListener("transitionend", _transitionEnd3); // Get the end animation styles
+
+    var animationEndStyle = _getExpandedElementDimensions(element); // Apply the styles after timeout to trigger CSS animation
+
+
+    window.setTimeout(_applyAnimationEndStyles(animationEndStyle), 0);
+  }
+
+  function collapseVertical(element, duration) {
+    var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    element.style.height = "0px";
+
+    _transitionEnd3 = function _transitionEnd2(ev) {
+      ev.target.removeEventListener("transitionend", _transitionEnd3);
+      ev.target.classList.remove("is-visible");
+
+      if (callback) {
+        callback.call();
+      }
+    };
+
+    element.addEventListener("transitionend", _transitionEnd3);
+  }
+
+  function _applyAnimationEndStyles(target) {
+    var styleObj = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    for (var cssPropertyName in styleObj) {
+      target.style[cssPropertyName] = styleObj[cssPropertyName];
+    }
+  }
+
+  function _getElementInnerHeight(element) {
+    return getComputedStyle(element).height;
+  }
+
+  function _getElementInnerWidth(element) {
+    return getComputedStyle(element).width;
+  }
+
+  function _getExpandedElementDimensions(element) {
+    var dimensions = {}; // Ensure element is shown for accurate calculations
+
+    element.style.display = "block";
+    dimensions.width = _getElementInnerWidth(element);
+    dimensions.height = _getElementInnerHeight(element);
+    dimensions.borderWidth = _getElementBorderWidth(element);
+    dimensions.margin = _getElementMargin(element);
+    dimensions.padding = _getElementPadding(element); // Reset inline display
+
+    element.style.display = "";
+    return dimensions;
+  }
+
+  function _getElementPadding(element) {
+    return getComputedStyle(element).padding;
+  }
+
+  function _getElementBorderWidth(element) {
+    return getComputedStyle(element).borderWidth;
+  }
+
+  function _getElementMargin(element) {
+    return getComputedStyle(element).margin;
   }
 
   var Options = /*#__PURE__*/_createClass(function Options() {
@@ -678,17 +916,9 @@
         if (this.options.showHideTransition.toLowerCase() === 'fade') {
           fadeIn(this._toastEl, 400, afterShown);
         } else if (this.options.showHideTransition.toLowerCase() === 'slide') {
-          // expand(this._toastEl, 400, "UP", function () {
-          //     var afterShown = new CustomEvent("toast.on.shown");
-          //     that._toastEl.dispatchEvent(afterShown);
-          // });
-          fadeIn(this._toastEl, 400, afterShown);
+          expand(this._toastEl, 400, "UP", afterShown);
         } else {
-          // expand(this._toastEl, 400, "RIGHT", function () {
-          //     var afterShown = new CustomEvent("toast.on.shown");
-          //     that._toastEl.dispatchEvent(afterShown);
-          // });
-          fadeIn(this._toastEl, 400, afterShown);
+          expand(this._toastEl, 400, "RIGHT", afterShown);
         }
 
         if (this.canAutoHide()) {
@@ -749,10 +979,9 @@
         if (toastEInstance.options.showHideTransition === "fade") {
           fadeOut(toastEInstance._toastEl, 400, animationEnd);
         } else if (toastEInstance.options.showHideTransition === "slide") {
-          // slideUp(toastEInstance._toastEl, 400, animationEnd);
-          fadeOut(toastEInstance._toastEl, 400, animationEnd);
+          collapse(toastEInstance._toastEl, 400, "DOWN", animationEnd); // fadeOut(toastEInstance._toastEl, 400, animationEnd);
         } else {
-          fadeOut(toastEInstance._toastEl, 400, animationEnd);
+          collapse(toastEInstance._toastEl, 400, "LEFT", animationEnd); // fadeOut(toastEInstance._toastEl, 400, animationEnd);
         }
       }
     }]);

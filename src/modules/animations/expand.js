@@ -1,11 +1,23 @@
 // Convert this css to JS https://jsfiddle.net/cferdinandi/qgpxvhhb/23/
 
-const _expandDirections = {
-    UP: -1,
-    DOWN: 1,
-    LEFT: -1,
-    RIGHT: 1
-};
+var _transitionEnd;
+const _collapsedElementDimensions = { width: 0, height: 0, padding: 0, margin: 0, borderWidth: 0 };
+const _expandState = {};
+
+/**
+ * ? Maybe make this a toggle function?
+ * Initializes the element state for the expansion/collapsing animation
+ * @param {HTMLElement} element Element to expand
+ */
+function _expandInit(element) {
+    if (element.classList.contains("is-visible")) {
+        _expandState.startStyle = _getExpandedElementDimensions(element);
+        _expandState.endStyle = _collapsedElementDimensions;
+    } else {
+        _expandState.startStyle = _collapsedElementDimensions;
+        _expandState.endStyle = _getExpandedElementDimensions(element);
+    }
+}
 
 /**
  * Expand an HTMLElement in a particular direction
@@ -16,10 +28,11 @@ const _expandDirections = {
  */
 function expand(element, duration, direction, callback = null) {
     direction = direction.toUpperCase() || "UP";
-
+    element.setAttribute("data-direction", direction);
+    element.classList.add("expand");
     // Call relevant function based on the direction passed
     if (direction === "UP" || direction === "DOWN") {
-        expandVertical(element, duration, direction, callback);
+        expandVertical(element, duration, callback);
     } else {
         expandHorizontal(element, duration, direction, callback);
     }
@@ -33,65 +46,58 @@ function expand(element, duration, direction, callback = null) {
  * @param {Function} [callback=null] The callback function to run after element has been completely collapsed
  */
 function collapse(element, duration, direction, callback = null) {
+
+    // Set data-direction attribute for element
     direction = direction.toUpperCase();
+    if (!element.getAttribute("data-direction")) {
+        element.setAttribute("data-direction", direction);
+    }
+
+    element.style.setProperty("--transition-duration", duration + "ms");
 
     // Call relevant function based on the direction passed
-    switch (direction) {
-        case "UP":
-        case "DOWN":
-            collapseVertical(element, duration, direction, callback);
-            break;
-
-        case "LEFT":
-        case "RIGHT":
-            collapseHorizontal(element, duration, direction, callback);
-            break;
-
-        default:
-            collapseVertical(element, duration, "DOWN", callback);
-            break;
-
+    if (direction === "UP" || direction === "DOWN") {
+        collapseVertical(element, duration, callback);
+    } else {
+        collapseHorizontal(element, duration, direction, callback);
     }
+
 }
 
-function expandVertical(element, duration, direction, callback = null) {
-    element.style.display = '';
-    element.style.height = 0;
-    var elementMaxHeight = getElementHeight(element);
-    var last = +new Date();
-    var tick = function () {
-        element.style.height = +element.style.height + (new Date() - last) / duration;
-        last = +new Date();
-        if (+element.style.height < elementMaxHeight) {
-            window.requestAnimationFrame && requestAnimationFrame(tick) || setTimeout(tick, 16);
-        } else {
-            element.style.height = 'auto';
-            if (callback) {
-                callback.call();
-            }
+function expandVertical(element, duration, callback = null) {
+    // set start props
+    element.style.height = "0px";
+    element.classList.add("is-visible");
+
+    // Set the transition end function
+    _transitionEnd = function (ev) {
+        // Remove the end transition to prevent extra calls on hide
+        ev.target.removeEventListener("transitionend", _transitionEnd);
+        if (callback) {
+            callback.call();
         }
     };
-    tick();
+
+    // Register the transitionend function
+    element.addEventListener("transitionend", _transitionEnd);
+
+    // Get the end animation styles
+    var animationEndStyle = _getExpandedElementDimensions(element);
+
+    // Apply the styles after timeout to trigger CSS animation
+    window.setTimeout(_applyAnimationEndStyles(animationEndStyle), 0);
 }
 
 function collapseVertical(element, duration, callback = null) {
-    element.style.display = '';
-    element.style.height = 0;
-    var elementMaxHeight = getElementHeight(element);
-    var last = +new Date();
-    var tick = function () {
-        element.style.height = +element.style.height + (new Date() - last) / duration;
-        last = +new Date();
-        if (+parsePixelValue(element.style.height) > 0 && element.style.height !== "auto") {
-            window.requestAnimationFrame && requestAnimationFrame(tick) || setTimeout(tick, 16);
-        } else {
-            element.style.height = 'auto';
-            if (callback) {
-                callback.call();
-            }
+    element.style.height = "0px";
+    _transitionEnd = function (ev) {
+        ev.target.removeEventListener("transitionend", _transitionEnd);
+        ev.target.classList.remove("is-visible");
+        if (callback) {
+            callback.call();
         }
     };
-    tick();
+    element.addEventListener("transitionend", _transitionEnd);
 }
 
 function expandHorizontal(element, duration, callback = null) {
@@ -102,24 +108,48 @@ function collapseHorizontal(element, duration, callback = null) {
 
 }
 
-function parsePixelValue(value) {
-    let output = value;
-    output = output.replace("px", "");
-    return +output;
+function _applyAnimationEndStyles(target, styleObj = {}) {
+    for (var cssPropertyName in styleObj) {
+        target.style[cssPropertyName] = styleObj[cssPropertyName];
+    }
 }
 
-function getElementHeight(element) {
-    element.style.display = "block";
-    var elementHeight = element.scrollHeight;
-    element.style.display = 'none';
-    return parsePixelValue(elementHeight);
+function _getElementInnerHeight(element) {
+    return getComputedStyle(element).height;
 }
 
-function getElementWidth(element) {
+function _getElementInnerWidth(element) {
+    return getComputedStyle(element).width;
+}
+
+function _getExpandedElementDimensions(element) {
+    var dimensions = {};
+
+    // Ensure element is shown for accurate calculations
     element.style.display = "block";
-    var elementWidth = element.scrollWidth;
-    element.style.display = 'none';
-    return parsePixelValue(elementWidth);
+
+    dimensions.width = _getElementInnerWidth(element);
+    dimensions.height = _getElementInnerHeight(element);
+    dimensions.borderWidth = _getElementBorderWidth(element);
+    dimensions.margin = _getElementMargin(element);
+    dimensions.padding = _getElementPadding(element);
+
+    // Reset inline display
+    element.style.display = "";
+
+    return dimensions;
+}
+
+function _getElementPadding(element) {
+    return getComputedStyle(element).padding;
+}
+
+function _getElementBorderWidth(element) {
+    return getComputedStyle(element).borderWidth;
+}
+
+function _getElementMargin(element) {
+    return getComputedStyle(element).margin;
 }
 
 export { expand, collapse };

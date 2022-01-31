@@ -1,0 +1,19 @@
+.expand {
+    display: none;
+    overflow: hidden;
+    padding: 0px;
+}
+
+.expand[data-direction="UP"],
+.expand[data-direction="DOWN"] {
+    height: 0;
+    transition: height 400ms ease-in, padding 400ms ease-in, opacity 1ms;
+}
+
+.expand[data-direction="UP"].is-visible,
+.expand[data-direction="DOWN"].is-visible {
+    height: var(--max-element-dimension);
+    display: block;
+    opacity: 1;
+    padding: 10px;
+}

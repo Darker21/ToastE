@@ -1,6 +1,6 @@
 /**
  * Generic functions which are not dependent on ToastE
- */
+*/
 export default class Utils {
 
     static bind(fn, me) {
