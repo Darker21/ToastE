@@ -35,7 +35,8 @@ jobs:
     <<: *defaults
     steps: 
       # Checkout the code as the first step.
-      - checkout
+      - checkout:
+          path: ~/repo/tmp
       - attach_workspace:
           at: ~/repo/tmp
       # Next, the node orb's install-packages step will install the dependencies from a package.json.
