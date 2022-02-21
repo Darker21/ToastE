@@ -46,7 +46,7 @@ jobs:
           pkg-manager: npm
       - run:
           name: List Files
-          command: ls -la
+          command: ls -la && echo $PWD
 
 
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
@@ -57,7 +57,7 @@ jobs:
     steps:
       - run:
           name: list file
-          command: ls -la
+          command: ls -la && echo $PWD
       - attach_workspace:
           at: ~/repo/tmp
       - run:
