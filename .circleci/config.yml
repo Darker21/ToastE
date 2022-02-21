@@ -28,9 +28,21 @@ jobs:
           paths:
             - cc-test-reporter
 
+  setup-environment:
+    <<: *defaults
+    steps: 
+      # Checkout the code as the first step.
+      - checkout
+      - attach_workspace:
+          at: ~/repo/tmp
+      # Next, the node orb's install-packages step will install the dependencies from a package.json.
+      # The orb install-packages step will also automatically cache them for faster future runs.
+      - node/install-packages:
+          # If you are using yarn, change the line below from "npm" to "yarn"
+          pkg-manager: npm
+
   scan-vulnerabilities:
-    docker:
-      - image: cimg/base:2021.04
+    <<: *defaults
     environment: 
       SNYK_TOKEN: "71e3f0c7-273f-4335-a2c1-8981a826e9b0"
     steps: 
@@ -43,15 +55,6 @@ jobs:
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
     steps:
-      # Checkout the code as the first step.
-      - checkout
-      - attach_workspace:
-          at: ~/repo/tmp
-      # Next, the node orb's install-packages step will install the dependencies from a package.json.
-      # The orb install-packages step will also automatically cache them for faster future runs.
-      - node/install-packages:
-          # If you are using yarn, change the line below from "npm" to "yarn"
-          pkg-manager: npm
       - run:
           name: Run tests
           command: |
@@ -79,12 +82,15 @@ workflows:
   build-test:
     jobs:
       - build
-      - scan-vulnerabilities:
+      - setup-environment:
           requires:
             - build
+      - scan-vulnerabilities:
+          requires:
+            - setup-environment
       - test:
           requires:
-            - scan-vulnerabilities
+            - setup-environment
       - upload-coverage:
           requires:
             - test
