@@ -13,8 +13,7 @@ orbs:
       - image: cimg/node:16.10
 
 jobs:
-
-  build:
+  download-deps:
     <<: *defaults
     steps:
       - run:
@@ -41,13 +40,6 @@ jobs:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: npm
 
-  scan-vulnerabilities:
-    <<: *defaults
-    environment: 
-      SNYK_TOKEN: "71e3f0c7-273f-4335-a2c1-8981a826e9b0"
-    steps: 
-      - snyk/scan:
-          token-variable: SNYK_TOKEN 
 
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   test:
@@ -64,7 +56,7 @@ jobs:
   upload-coverage:
     <<: *defaults
     environment:
-      CC_TEST_REPORTER_ID: 9c1e8373b962c023d7ac2bbb4a213871762505b97f891c904e106ca0630c745e
+      CC_TEST_REPORTER_ID: $CC_API_KEY
     steps:
       - attach_workspace:
           at: ~/repo/tmp
@@ -72,6 +64,33 @@ jobs:
           name: Upload coverage results to Code Climate
           command : |
               ./tmp/cc-test-reporter upload-coverage -i tmp/codeclimate.npm.json
+
+  scan-vulnerabilities:
+    <<: *defaults
+    environment: 
+      SNYK_TOKEN: $SNYK_API_KEY
+    steps: 
+      - snyk/scan:
+          token-variable: SNYK_TOKEN 
+  
+  build:
+    <<: *defaults
+    steps:
+      - run:
+          name: Package build
+          command: npm run build
+
+  publish:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo/tmp
+      - run:
+          name: Auth with NPM
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_API_KEY" > ~/repo/tmp/.npmrc
+      - run:
+          name: Publish Package
+          command: npm publish 
 
 
 workflows:
@@ -81,18 +100,31 @@ workflows:
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
   build-test:
     jobs:
-      - build
+      - download-deps:
+          context: NPM
       - setup-environment:
+          context: NPM
           requires:
-            - build
-      - scan-vulnerabilities:
-          requires:
-            - setup-environment
+            - download-deps
       - test:
+          context: NPM
           requires:
             - setup-environment
       - upload-coverage:
+          context: NPM
           requires:
             - test
+      - build:
+          context: NPM
+          requires:
+            - test
+      - scan-vulnerabilities:
+          context: NPM
+          requires:
+            - build
+      - publish:
+          context: NPM
+          requires:
+            - scan-vulnerabilities
       # For running simple node tests, you could optionally use the node/test job from the orb to replicate and replace the job above in fewer lines.
       # - node/test
