@@ -9,6 +9,7 @@ orbs:
   node: circleci/node@4.7
   snyk: snyk/snyk@1.1.2
   defaults: &defaults
+    working_directory: ~/repo/tmp
     docker:
       - image: cimg/node:16.10
 
@@ -46,7 +47,6 @@ jobs:
     <<: *defaults
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
-    working_directory: ~/repo/tmp
     steps:
       - run:
           name: list file
