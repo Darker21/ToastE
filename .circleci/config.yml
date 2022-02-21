@@ -72,6 +72,13 @@ jobs:
     steps: 
       - snyk/scan:
           token-variable: SNYK_TOKEN 
+          fail-on-issues: true
+          command: test
+          target-file: ~/repo/tmp/dist/toaste-notifier.js
+          monitor-on-build: true
+          protect: false
+          severity-threshold: medium
+          os: linux
   
   build:
     <<: *defaults
