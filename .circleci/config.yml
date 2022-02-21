@@ -24,7 +24,7 @@ jobs:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./repo/tmp/cc-test-reporter
             chmod +x ./repo/tmp/cc-test-reporter
       - persist_to_workspace:
-          root: ~/repo/tmp
+          root: ./repo/tmp
           paths:
             - cc-test-reporter
       - run:
