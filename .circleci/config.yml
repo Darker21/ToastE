@@ -46,6 +46,7 @@ jobs:
     <<: *defaults
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
+    working_directory: ~/repo/tmp
     steps:
       - attach_workspace:
           at: ~/repo/tmp
