@@ -6,6 +6,7 @@ const _expandState = {};
 
 /**
  * ? Maybe make this a toggle function?
+ * ? Maybe make this a base class method with overridable 'animate' function
  * Initializes the element state for the expansion/collapsing animation
  * @param {HTMLElement} element Element to expand
  */
@@ -34,7 +35,7 @@ function expand(element, duration, direction, callback = null) {
     if (direction === "UP" || direction === "DOWN") {
         expandVertical(element, duration, callback);
     } else {
-        expandHorizontal(element, duration, direction, callback);
+        expandHorizontal(element, duration, callback);
     }
 }
 
@@ -59,11 +60,17 @@ function collapse(element, duration, direction, callback = null) {
     if (direction === "UP" || direction === "DOWN") {
         collapseVertical(element, duration, callback);
     } else {
-        collapseHorizontal(element, duration, direction, callback);
+        collapseHorizontal(element, duration, callback);
     }
 
 }
 
+/**
+ * Expand an element vertically
+ * @param {HTMLElement} element - The element to expand.
+ * @param {number} duration - The duration of the animation in milliseconds.
+ * @param {function} [callback=null] - A function to be called after the animation is complete.
+ */
 function expandVertical(element, duration, callback = null) {
     // set start props
     element.style.height = "0px";
@@ -85,7 +92,7 @@ function expandVertical(element, duration, callback = null) {
     var animationEndStyle = _getExpandedElementDimensions(element);
 
     // Apply the styles after timeout to trigger CSS animation
-    window.setTimeout(_applyAnimationEndStyles(animationEndStyle), 0);
+    window.setTimeout(_applyAnimationEndStyles, 0, animationEndStyle);
 }
 
 function collapseVertical(element, duration, callback = null) {

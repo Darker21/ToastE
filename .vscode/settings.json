@@ -24,5 +24,8 @@
         "**/node_modules/*/**": true,
         "**/.hg/store/**": true
     },
-    "files.eol": "\r\n"
+    "files.eol": "\r\n",
+    "jshint.options": {
+        "esversion": 11
+    }
 }

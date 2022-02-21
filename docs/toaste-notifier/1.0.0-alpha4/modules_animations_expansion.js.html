@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: ToastE-Notifier</title>
+    <title>JSDoc: Source: modules/animations/expansion.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,132 +17,41 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: ToastE-Notifier</h1>
+    <h1 class="page-title">Source: modules/animations/expansion.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Wrapper module to expose public functionality</p></div>
-        
-
-        
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="toaste-notifier.js.html">toaste-notifier.js</a>, <a href="toaste-notifier.js.html#line1173">line 1173</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Utils from "../../utils/Utils";
+import AnimationOptions from "../settings/AnimationOptions";
+
+export default class ExpandAnimation extends Animation {
+    constructor(element, objProps) {
+        super(element);
+
+        this.options = Utils.extend(objProps || {}, this.options);
+    }
+
+    play() {
+        super.play();
+    }
+
+    /**
+     * It creates an ExpandAnimation object.
+     * @param element - The element to animate.
+     * @param animationProps - The animation properties that are passed to the animation constructor.
+     * @returns The ExpandAnimation object.
+     */
+    static expandElement(element, animationProps) {
+        return new ExpandAnimation(element, animationProps);
+    }
+}</code></pre>
+        </article>
+    </section>
 
 
 

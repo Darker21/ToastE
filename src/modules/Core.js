@@ -1,18 +1,9 @@
 import Utils from '../utils/Utils';
-import { fadeIn, fadeOut } from './animations/fade';
+import FadeAnimation from './animations/fade';
 import { expand, collapse } from './animations/expand';
 import { Options } from './settings/Options';
-
-const _positionClasses = [
-    "bottom-left",
-    "bottom-right",
-    "top-right",
-    "top-left",
-    "bottom-center",
-    "top-center",
-    "mid-center"
-];
-const _defaultIcons = ["success", "error", "info", "warning"];
+import AnimationOptions from './settings/AnimationOptions';
+import { ToasteEvents, PositionClasses, DefaultIcons } from './lib/Constants';
 
 /**
  * ToastE Notifier core class responsible for core functionality
@@ -147,7 +138,7 @@ export default class Core {
         if (this.options.icon) {
             this._toastEl.classList.add("toaste-has-icon");
 
-            if (this.options.icon && _defaultIcons.includes(this.options.icon)) {
+            if (this.options.icon && DefaultIcons.includes(this.options.icon)) {
                 this._toastEl.classList.add(
                     `toaste-icon-${this.options.icon}`
                 );
@@ -166,7 +157,7 @@ export default class Core {
     position() {
         if (
             typeof this.options.position === "string" &&
-            _positionClasses.indexOf(this.options.position) > -1
+            PositionClasses.indexOf(this.options.position) > -1
         ) {
             let containerRect = this._container.getBoundingClientRect();
 
@@ -225,7 +216,7 @@ export default class Core {
         const that = this;
 
         // Register the event handler to hide/remove the loader
-        this._toastEl.addEventListener("toast.on.shown", function () {
+        this._toastEl.addEventListener(ToasteEvents.onShown, function () {
             that.processLoader();
         });
 
@@ -237,28 +228,28 @@ export default class Core {
         // Register the available event handlers passed in through options
         if (typeof this.options.beforeShow === "function") {
             this._toastEl.addEventListener(
-                "toast.on.show",
+                ToasteEvents.onShow,
                 that.options.beforeShow(that._toastEl)
             );
         }
 
         if (typeof this.options.afterShown === "function") {
             this._toastEl.addEventListener(
-                "toast.on.shown",
+                ToasteEvents.onShown,
                 that.options.afterShown(that._toastEl)
             );
         }
 
         if (typeof this.options.beforeHide === "function") {
             this._toastEl.addEventListener(
-                "toast.on.hide",
+                ToasteEvents.onHide,
                 that.options.beforeHide(that._toastEl)
             );
         }
 
         if (typeof this.options.afterHidden === "function") {
             this._toastEl.addEventListener(
-                "toast.on.hidden",
+                ToasteEvents.onHidden,
                 that.options.afterHidden(that._toastEl)
             );
         }
@@ -360,19 +351,18 @@ export default class Core {
 
     animate() {
         var that = this;
-        var evBeforeShow = new CustomEvent("toaste.on.show");
-
-        var afterShown = function () {
-            var afterShown = new CustomEvent("toast.on.shown");
-            that._toastEl.dispatchEvent(afterShown);
+        const afterShown = function () {
+            Utils.dispatchEvent(that._toastEl, ToasteEvents.onShown);
         };
+        var optionsAnimation = new AnimationOptions();
+        optionsAnimation.onAnimationEnd = afterShown;
 
         this._toastEl.style.display = 'none';
 
-        this._toastEl.dispatchEvent(evBeforeShow);
+        Utils.dispatchEvent(that._toastEl, ToasteEvents.onShow);
 
         if (this.options.showHideTransition.toLowerCase() === 'fade') {
-            fadeIn(this._toastEl, 400, afterShown);
+            FadeAnimation.fadeElement(this._toastEl, optionsAnimation).play();
         } else if (this.options.showHideTransition.toLowerCase() === 'slide') {
             expand(this._toastEl, 400, "UP", afterShown);
         } else {
@@ -406,6 +396,7 @@ export default class Core {
      * @param {Event} event The event that triggered the close method
      */
     closeToast(toastEInstance, event) {
+        var animationOptions;
 
         if (event) {
             event.preventDefault();
@@ -413,25 +404,26 @@ export default class Core {
 
         const animationEnd = function () {
             toastEInstance._toastEl.style.display = "none";
-            var evToastHidden = new CustomEvent("toast.on.hidden");
-            toastEInstance._toastEl.dispatchEvent(evToastHidden);
+            Utils.dispatchEvent(toastEInstance._toastEl, ToasteEvents.onHidden);
             if (toastEInstance.autoCloseTimeout) {
                 window.clearTimeout(toastEInstance.autoCloseTimeout);
             }
         };
 
+        animationOptions = new AnimationOptions();
+        animationOptions.onAnimationEnd = animationEnd;
+        animationOptions.startStyle = { opacity: toastEInstance._toastEl.style.opacity };
+        animationOptions.endStyle = { opacity: 0 };
+
         // Dispatch event to trigger any event listeners
-        var evToastHide = new CustomEvent("toast.on.hide");
-        toastEInstance._toastEl.dispatchEvent(evToastHide);
+        Utils.dispatchEvent(toastEInstance._toastEl, ToasteEvents.onHide);
 
         if (toastEInstance.options.showHideTransition === "fade") {
-            fadeOut(toastEInstance._toastEl, 400, animationEnd);
+            FadeAnimation.fadeElement(toastEInstance._toastEl, animationOptions).play();
         } else if (toastEInstance.options.showHideTransition === "slide") {
             collapse(toastEInstance._toastEl, 400, "DOWN", animationEnd);
-            // fadeOut(toastEInstance._toastEl, 400, animationEnd);
         } else {
             collapse(toastEInstance._toastEl, 400, "LEFT", animationEnd);
-            // fadeOut(toastEInstance._toastEl, 400, animationEnd);
         }
     }
 }

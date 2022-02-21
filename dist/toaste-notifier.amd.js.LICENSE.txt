@@ -1,0 +1,5 @@
+/*!
+   * ToastE-Notifier v1.0.0-alpha4
+   * (c) 2022-2022 Jacob Darker
+   * Released under the MIT License.
+   */

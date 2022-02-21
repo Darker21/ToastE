@@ -72,7 +72,7 @@ function collapse(element, duration, direction, callback = null) {
     if (direction === "UP" || direction === "DOWN") {
         collapseVertical(element, duration, callback);
     } else {
-        collapseHorizontal(element, duration, direction, callback);
+        collapseHorizontal(element, duration, callback);
     }
 
 }

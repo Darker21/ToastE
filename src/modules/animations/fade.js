@@ -1,65 +1,89 @@
-var _last;
+import Animation from "./animation";
+import AnimationOptions from "../settings/AnimationOptions";
+import Utils from "../../utils/Utils";
 
+/* Creates a new instance of the Fade Animation class */
+export default class FadeAnimation extends Animation {
+    /**
+     * Creates a new instance of the Animation class
+     * @param {HTMLElement} element - The element to animate.
+     * @param {AnimationOptions|Object} animationOptions - an object containing the options for the animation.
+     */
+    constructor(element, animationOptions) {
+        super(element);
 
-/**
- * Initialize the fade animation properties
- * @param {HTMLElement} element The element the fade animation will be applied to
- * @param {Number|string} startOpacity The starting opacity of the target element
- * @private
- */
-function fadeInit(element, startOpacity) {
-    element.style.display = '';
-    element.style.opacity = startOpacity;
-    _last = +new Date();
-}
+        this.options.startStyle = {
+            opacity: 0
+        };
+        this.options.endStyle = {
+            opacity: 1
+        };
 
-/**
- * Fade an HTML Element into view
- * @param {HTMLElement} element - The element to fade in
- * @param {Number} duration - The duration of the fade animation
- * @param {Function} callback - The callback function after the animation has completed
- * @param {Object} callbackParams - The parameters for the callback param
- * @see {@link https://codepen.io/jorgemaiden/pen/xoRKWN}
- */
-function fadeIn(element, duration, callback = null) {
+        this.options = Utils.extend(this.options, animationOptions);
+    }
 
-    fadeInit(element, 0);
-    var tick = function () {
-        element.style.opacity = +element.style.opacity + (new Date() - _last) / duration;
-        _last = +new Date();
-        if (+element.style.opacity < 1) {
-            window.requestAnimationFrame && requestAnimationFrame(tick) || setTimeout(tick, 16);
+    /**
+     * Play the animation
+     */
+    play() {
+        this.target.style.display = this.target.style.display !== "none" || "";
+
+        // if the last tick was less than 0.5s, resume
+        var resume = +new Date() - (this._last || 0) < 500;
+        if (resume) {
+            this.resume();
         } else {
-            if (callback) {
-                callback.call();
-            }
+            this.reset();
+            this.resume();
         }
-    };
-    tick();
-}
+    }
 
-/**
- * Fade an HTML Element out of view
- * @param {HTMLElement} element - The element to fade out
- * @param {Number} duration - The duration of the fade animation
- * @param {Function} callback - The callback function called after the animation has completed
- */
-function fadeOut(element, duration, callback = null) {
-    fadeInit(element, 1);
-    var tick = function () {
-        element.style.opacity = +element.style.opacity - (new Date() - _last) / duration;
-        _last = +new Date();
-        if (+element.style.opacity > 0) {
-            window.requestAnimationFrame && requestAnimationFrame(tick) || setTimeout(tick, 16);
+    /**
+     * Resume the animation
+     */
+    resume() {
+        this._last = +new Date();
+        this._tick();
+    }
+
+    /**
+     * Calculate the new opacity and whether it has reached the target.
+     * If the target opacity has not been reached, call the _tick function again.
+     * If the target opacity has been reached, call the onAnimationEnd function
+     */
+    _tick() {
+        var animationFinish,
+            denominator;
+
+        // Call base method
+        super._tick();
+
+        // Calculate Opacity
+        denominator = this.options.startStyle.opacity > this.options.endStyle.opacity ? Math.abs(this.options.duration) * -1 : Math.abs(this.options.duration);
+        this.target.style.opacity = +this.target.style.opacity + (new Date() - this._last) / denominator;
+
+        // Update _last to now
+        this._last = +new Date();
+
+        // Calculate new opacity and whether it has reached the target
+        if (this.options.startStyle.opacity > this.options.endStyle.opacity) {
+            animationFinish = +this.target.style.opacity <= +this.options.endStyle.opacity;
         } else {
-            element.hidden = true;
-            if (callback) {
-                callback.call();
-            }
+            animationFinish = +this.target.style.opacity >= +this.options.endStyle.opacity;
         }
-    };
-    tick();
+
+        // Check if the target opacity has been met
+        animationFinish ? this.options.onAnimationEnd?.call() : this._tickTimeout = setTimeout(Utils.bind(this._tick, this), this.options.frameRate);
+    }
+
+    /**
+     * Create a new instance of the FadeAnimation class
+     * @param {HTMLElement} element - The element to be animated.
+     * @param {AnimationOptions|Object} animationOptions - An object containing the animation properties.
+     * @returns Instance of a fade animation.
+     */
+    static fadeElement(element, animationOptions) {
+        return new FadeAnimation(element, animationOptions);
+    }
+
 }
-
-
-export { fadeIn, fadeOut };

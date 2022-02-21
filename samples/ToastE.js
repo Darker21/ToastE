@@ -1,13 +1,13 @@
 /*!
- * ToastE v1.0.0-alpha3
+ * ToastE-Notifier v1.0.0-alpha4
  * (c) 2022-2022 Jacob Darker
  * Released under the MIT License.
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
-      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global["ToastE-Notifier"] = factory());
-})(this, (function () {
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['ToastE-Notifier'] = factory());
+}(this, (function () {
   'use strict';
 
   function _typeof(obj) {
@@ -60,6 +60,132 @@
     return obj;
   }
 
+  function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function");
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        writable: true,
+        configurable: true
+      }
+    });
+    Object.defineProperty(subClass, "prototype", {
+      writable: false
+    });
+    if (superClass) _setPrototypeOf(subClass, superClass);
+  }
+
+  function _getPrototypeOf(o) {
+    _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+      return o.__proto__ || Object.getPrototypeOf(o);
+    };
+    return _getPrototypeOf(o);
+  }
+
+  function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+      o.__proto__ = p;
+      return o;
+    };
+
+    return _setPrototypeOf(o, p);
+  }
+
+  function _isNativeReflectConstruct() {
+    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+    if (Reflect.construct.sham) return false;
+    if (typeof Proxy === "function") return true;
+
+    try {
+      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () { }));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function _assertThisInitialized(self) {
+    if (self === void 0) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return self;
+  }
+
+  function _possibleConstructorReturn(self, call) {
+    if (call && (typeof call === "object" || typeof call === "function")) {
+      return call;
+    } else if (call !== void 0) {
+      throw new TypeError("Derived constructors may only return object or undefined");
+    }
+
+    return _assertThisInitialized(self);
+  }
+
+  function _createSuper(Derived) {
+    var hasNativeReflectConstruct = _isNativeReflectConstruct();
+
+    return function _createSuperInternal() {
+      var Super = _getPrototypeOf(Derived),
+        result;
+
+      if (hasNativeReflectConstruct) {
+        var NewTarget = _getPrototypeOf(this).constructor;
+
+        result = Reflect.construct(Super, arguments, NewTarget);
+      } else {
+        result = Super.apply(this, arguments);
+      }
+
+      return _possibleConstructorReturn(this, result);
+    };
+  }
+
+  function _superPropBase(object, property) {
+    while (!Object.prototype.hasOwnProperty.call(object, property)) {
+      object = _getPrototypeOf(object);
+      if (object === null) break;
+    }
+
+    return object;
+  }
+
+  function _get() {
+    if (typeof Reflect !== "undefined" && Reflect.get) {
+      _get = Reflect.get;
+    } else {
+      _get = function _get(target, property, receiver) {
+        var base = _superPropBase(target, property);
+
+        if (!base) return;
+        var desc = Object.getOwnPropertyDescriptor(base, property);
+
+        if (desc.get) {
+          return desc.get.call(arguments.length < 3 ? target : receiver);
+        }
+
+        return desc.value;
+      };
+    }
+
+    return _get.apply(this, arguments);
+  }
+
+  function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+  }
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+  }
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+  }
+
   function _unsupportedIterableToArray(o, minLen) {
     if (!o) return;
     if (typeof o === "string") return _arrayLikeToArray(o, minLen);
@@ -75,6 +201,10 @@
     for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
 
     return arr2;
+  }
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
   function _createForOfIteratorHelper(o, allowArrayLike) {
@@ -134,9 +264,139 @@
     };
   }
 
+  var AnimationOptions = /*#__PURE__*/_createClass(function AnimationOptions() {
+    _classCallCheck(this, AnimationOptions);
+
+    this.endStyle = {};
+    this.startStyle = {};
+    this.currentStyle = {};
+    this.duration = 400;
+    this.frameRate = 16;
+    this.classes = {};
+    this.currentClasses = [];
+    this.endClasses = [];
+    this.startClasses = [];
+    this.onAnimationEnd = undefined;
+    this.onAnimationStart = undefined;
+    this.onAnimationTick = undefined;
+  });
+
+  /**
+   * The Animation class is a base class for all animations.
+  */
+
+  var Animation = /*#__PURE__*/function () {
+    function Animation(element) {
+      _classCallCheck(this, Animation);
+
+      this.target = element;
+      this.options = new AnimationOptions();
+      this._tickTimeout = null;
+      this._reverseAnimation = false;
+    }
+
+    _createClass(Animation, [{
+      key: "play",
+      value: function play() {
+        var _this$options$onAnima;
+
+        this.reset();
+        (_this$options$onAnima = this.options.onAnimationStart) === null || _this$options$onAnima === void 0 ? void 0 : _this$options$onAnima.call();
+        this.resume();
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        window.clearTimeout(this._tickTimeout);
+
+        this._applyClasses(this.target, this.options.endClasses);
+
+        this._applyStyles(this.target, this.options.endStyle);
+      }
+    }, {
+      key: "reset",
+      value: function reset() {
+        this._applyStyles(this.target, this.options.startStyle);
+
+        this._applyClasses(this.target, this.options.startClasses);
+      }
+    }, {
+      key: "pause",
+      value: function pause() {
+        if (this._tickTimeout) {
+          window.clearTimeout(this._tickTimeout);
+        }
+      }
+    }, {
+      key: "resume",
+      value: function resume() {
+        throw new Error("Animation method not implemented.");
+      }
+    }, {
+      key: "reverse",
+      value: function reverse() {
+        this._swapStartEndElementProps();
+
+        this.options.reverse = true;
+        this.reset();
+        this.resume();
+      }
+    }, {
+      key: "_tick",
+      value: function _tick() {
+        var _this$options$onAnima2;
+
+        (_this$options$onAnima2 = this.options.onAnimationTick) === null || _this$options$onAnima2 === void 0 ? void 0 : _this$options$onAnima2.call();
+      }
+      /**
+       * It applies the styles in the styleObj to the Element.
+       * @param {HTMLElement} element - The Element to apply the styles to.
+       * @param {Object} styleObj - The object containing the styles to apply.
+       */
+
+    }, {
+      key: "_applyStyles",
+      value: function _applyStyles(element, styleObj) {
+        for (var cssPropertyName in styleObj) {
+          element.style[cssPropertyName] = styleObj[cssPropertyName];
+        }
+      }
+      /**
+       * Apply the classes in the classList to the Element.
+       * @param {HTMLElement} element - The Element to apply the classes to.
+       * @param {Array<string>} classList - A list of class names to be added to the Element.
+       */
+
+    }, {
+      key: "_applyClasses",
+      value: function _applyClasses(element, classList) {
+        for (var className in classList) {
+          if (!element.classList.contains(className)) {
+            element.classList.add(className);
+          }
+        }
+      }
+    }, {
+      key: "_swapStartEndElementProps",
+      value: function _swapStartEndElementProps() {
+        var _this$options = this.options,
+          startStyle = _this$options.startStyle,
+          endStyle = _this$options.endStyle,
+          startClasses = _this$options.startClasses,
+          endClasses = _this$options.endClasses;
+        this.options.startClasses = endClasses;
+        this.options.startStyle = endStyle;
+        this.options.endClasses = startClasses;
+        this.options.endStyle = startStyle;
+      }
+    }]);
+
+    return Animation;
+  }();
+
   /**
    * Generic functions which are not dependent on ToastE
-   */
+  */
   var Utils = /*#__PURE__*/function () {
     function Utils() {
       _classCallCheck(this, Utils);
@@ -144,15 +404,62 @@
 
     _createClass(Utils, null, [{
       key: "bind",
-      value: function bind(fn, me) {
-        return function () {
-          return fn.apply(me, arguments);
-        };
-      }
+      value:
+        /**
+         * Create a new function that binds the current object to the first parameter of the original
+         * function
+         * @param {Function} fn - The function to bind.
+         * @param {any} me - the object that the function is bound to.
+         * @returns {Function} A function that is bound to the object.
+         */
+        function bind(fn, me) {
+          return function () {
+            return fn.apply(me, arguments);
+          };
+        }
+      /**
+       * Returns true if the item is an object and not an array and not null.
+       * @param {any} item - The item to check.
+       * @returns {boolean} The `isObject` function returns a boolean value.
+       */
+
     }, {
       key: "isObject",
       value: function isObject(item) {
         return item && _typeof(item) === 'object' && !Array.isArray(item) && item != null;
+      }
+      /**
+       * Get all the possible DOM events that can be listened to
+       * @returns {string[]} An array of all the possible DOM events.
+       */
+
+    }, {
+      key: "_listAllPossibleDomEvents",
+      get: function get() {
+        // credit: https://stackoverflow.com/a/18751951
+        return _toConsumableArray(new Set([].concat(_toConsumableArray(Object.getOwnPropertyNames(document)), _toConsumableArray(Object.getOwnPropertyNames(Object.getPrototypeOf(Object.getPrototypeOf(document)))), _toConsumableArray(Object.getOwnPropertyNames(Object.getPrototypeOf(window)))).filter(function (k) {
+          return k.startsWith("on") && (document[k] == null || typeof document[k] == "function");
+        })));
+      }
+      /**
+       * Dispatch an event on an element.
+       * @param {HTMLElement} element - The element that will be used to dispatch the event.
+       * @param {string} eventName - The name of the event to dispatch.
+       */
+
+    }, {
+      key: "dispatchEvent",
+      value: function dispatchEvent(element, eventName) {
+        var eventDispatching;
+        eventName = eventName.toLowerCase();
+
+        if (Utils._listAllPossibleDomEvents.includes(eventName)) {
+          eventDispatching = new Event(eventName);
+          element.dispatchEvent(eventDispatching);
+        } else {
+          eventDispatching = new CustomEvent(eventName);
+          element.dispatchEvent(eventDispatching);
+        }
       }
       /**
        * Merges two objects properties
@@ -164,8 +471,6 @@
     }, {
       key: "extend",
       value: function extend(target, source) {
-        var _this = this;
-
         // credit: http://stackoverflow.com/questions/27936772/deep-object-merging-in-es6-es7#answer-34749873
         if (typeof Object.assign !== 'function') {
 
@@ -197,13 +502,13 @@
 
         var output = Object.assign({}, target);
 
-        if (this.isObject(target) && this.isObject(source)) {
+        if (Utils.isObject(target) && Utils.isObject(source)) {
           Object.keys(source).forEach(function (key) {
-            if (_this.isObject(source[key])) {
+            if (Utils.isObject(source[key])) {
               if (!(key in target)) {
                 Object.assign(output, _defineProperty({}, key, source[key]));
               } else {
-                output[key] = _this.extend(target[key], source[key]);
+                output[key] = Utils.extend(target[key], source[key]);
               }
             } else {
               Object.assign(output, _defineProperty({}, key, source[key]));
@@ -218,77 +523,244 @@
     return Utils;
   }();
 
-  var _last;
+  /* Creates a new instance of the Fade Animation class */
+
+
+  var FadeAnimation = /*#__PURE__*/function (_Animation) {
+    _inherits(FadeAnimation, _Animation);
+
+    var _super = _createSuper(FadeAnimation);
+
+    /**
+     * Creates a new instance of the Animation class
+     * @param {HTMLElement} element - The element to animate.
+     * @param {AnimationOptions|Object} animationOptions - an object containing the options for the animation.
+     */
+    function FadeAnimation(element, animationOptions) {
+      var _this;
+
+      _classCallCheck(this, FadeAnimation);
+
+      _this = _super.call(this, element);
+      _this.options.startStyle = {
+        opacity: 0
+      };
+      _this.options.endStyle = {
+        opacity: 1
+      };
+      _this.options = Utils.extend(_this.options, animationOptions);
+      return _this;
+    }
+    /**
+     * Play the animation
+     */
+
+
+    _createClass(FadeAnimation, [{
+      key: "play",
+      value: function play() {
+        this.target.style.display = this.target.style.display !== "none" || ""; // if the last tick was less than 0.5s, resume
+
+        var resume = +new Date() - (this._last || 0) < 500;
+
+        if (resume) {
+          this.resume();
+        } else {
+          this.reset();
+          this.resume();
+        }
+      }
+      /**
+       * Resume the animation
+       */
+
+    }, {
+      key: "resume",
+      value: function resume() {
+        this._last = +new Date();
+
+        this._tick();
+      }
+      /**
+       * Calculate the new opacity and whether it has reached the target.
+       * If the target opacity has not been reached, call the _tick function again.
+       * If the target opacity has been reached, call the onAnimationEnd function
+       */
+
+    }, {
+      key: "_tick",
+      value: function _tick() {
+        var _this$options$onAnima;
+
+        var animationFinish, denominator; // Call base method
+
+        _get(_getPrototypeOf(FadeAnimation.prototype), "_tick", this).call(this); // Calculate Opacity
+
+
+        denominator = this.options.startStyle.opacity > this.options.endStyle.opacity ? Math.abs(this.options.duration) * -1 : Math.abs(this.options.duration);
+        this.target.style.opacity = +this.target.style.opacity + (new Date() - this._last) / denominator; // Update _last to now
+
+        this._last = +new Date(); // Calculate new opacity and whether it has reached the target
+
+        if (this.options.startStyle.opacity > this.options.endStyle.opacity) {
+          animationFinish = +this.target.style.opacity <= +this.options.endStyle.opacity;
+        } else {
+          animationFinish = +this.target.style.opacity >= +this.options.endStyle.opacity;
+        } // Check if the target opacity has been met
+
+
+        animationFinish ? (_this$options$onAnima = this.options.onAnimationEnd) === null || _this$options$onAnima === void 0 ? void 0 : _this$options$onAnima.call() : this._tickTimeout = setTimeout(Utils.bind(this._tick, this), this.options.frameRate);
+      }
+      /**
+       * Create a new instance of the FadeAnimation class
+       * @param {HTMLElement} element - The element to be animated.
+       * @param {AnimationOptions|Object} animationOptions - An object containing the animation properties.
+       * @returns Instance of a fade animation.
+       */
+
+    }], [{
+      key: "fadeElement",
+      value: function fadeElement(element, animationOptions) {
+        return new FadeAnimation(element, animationOptions);
+      }
+    }]);
+
+    return FadeAnimation;
+  }(Animation);
+
+  // Convert this css to JS https://jsfiddle.net/cferdinandi/qgpxvhhb/23/
+  var _transitionEnd3;
   /**
-   * Initialize the fade animation properties
-   * @param {HTMLElement} element The element the fade animation will be applied to
-   * @param {Number|string} startOpacity The starting opacity of the target element
-   * @private
+   * Expand an HTMLElement in a particular direction
+   * @param {HTMLElement} element Element to animate the expansion
+   * @param {Number} duration The duration of the expand animation (milliseconds)
+   * @param {string} direction The direction to expand the object (allowed-values: 'UP', 'DOWN', 'LEFT', 'RIGHT')
+   * @param {Function} [callback=null] The callback function to run after element has been completely expanded
    */
 
 
-  function fadeInit(element, startOpacity) {
-    element.style.display = '';
-    element.style.opacity = startOpacity;
-    _last = +new Date();
+  function expand(element, duration, direction) {
+    var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    direction = direction.toUpperCase() || "UP";
+    element.setAttribute("data-direction", direction);
+    element.classList.add("expand"); // Call relevant function based on the direction passed
+
+    if (direction === "UP" || direction === "DOWN") {
+      expandVertical(element, duration, callback);
+    }
   }
   /**
-   * Fade an HTML Element into view
-   * @param {HTMLElement} element - The element to fade in
-   * @param {Number} duration - The duration of the fade animation
-   * @param {Function} callback - The callback function after the animation has completed
-   * @param {Object} callbackParams - The parameters for the callback param
-   * @see {@link https://codepen.io/jorgemaiden/pen/xoRKWN}
+   * Collapse an HTMLElement in a particular direction
+   * @param {HTMLElement} element Element to animate with the collapse
+   * @param {Number} duration The duration of the collapse animation (milliseconds)
+   * @param {string} direction The direction to collapse the object (allowed-values: 'UP', 'DOWN', 'LEFT', 'RIGHT')
+   * @param {Function} [callback=null] The callback function to run after element has been completely collapsed
    */
 
 
-  function fadeIn(element, duration) {
+  function collapse(element, duration, direction) {
+    var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    // Set data-direction attribute for element
+    direction = direction.toUpperCase();
+
+    if (!element.getAttribute("data-direction")) {
+      element.setAttribute("data-direction", direction);
+    }
+
+    element.style.setProperty("--transition-duration", duration + "ms"); // Call relevant function based on the direction passed
+
+    if (direction === "UP" || direction === "DOWN") {
+      collapseVertical(element, duration, callback);
+    }
+  }
+  /**
+   * Expand an element vertically
+   * @param {HTMLElement} element - The element to expand.
+   * @param {number} duration - The duration of the animation in milliseconds.
+   * @param {function} [callback=null] - A function to be called after the animation is complete.
+   */
+
+
+  function expandVertical(element, duration) {
     var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-    fadeInit(element, 0);
+    // set start props
+    element.style.height = "0px";
+    element.classList.add("is-visible"); // Set the transition end function
 
-    var tick = function tick() {
-      element.style.opacity = +element.style.opacity + (new Date() - _last) / duration;
-      _last = +new Date();
+    _transitionEnd3 = function _transitionEnd(ev) {
+      // Remove the end transition to prevent extra calls on hide
+      ev.target.removeEventListener("transitionend", _transitionEnd3);
 
-      if (+element.style.opacity < 1) {
-        window.requestAnimationFrame && requestAnimationFrame(tick) || setTimeout(tick, 16);
-      } else {
-        if (callback) {
-          callback.call();
-        }
+      if (callback) {
+        callback.call();
+      }
+    }; // Register the transitionend function
+
+
+    element.addEventListener("transitionend", _transitionEnd3); // Get the end animation styles
+
+    var animationEndStyle = _getExpandedElementDimensions(element); // Apply the styles after timeout to trigger CSS animation
+
+
+    window.setTimeout(_applyAnimationEndStyles, 0, animationEndStyle);
+  }
+
+  function collapseVertical(element, duration) {
+    var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    element.style.height = "0px";
+
+    _transitionEnd3 = function _transitionEnd2(ev) {
+      ev.target.removeEventListener("transitionend", _transitionEnd3);
+      ev.target.classList.remove("is-visible");
+
+      if (callback) {
+        callback.call();
       }
     };
 
-    tick();
+    element.addEventListener("transitionend", _transitionEnd3);
   }
-  /**
-   * Fade an HTML Element out of view
-   * @param {HTMLElement} element - The element to fade out
-   * @param {Number} duration - The duration of the fade animation
-   * @param {Function} callback - The callback function called after the animation has completed
-   */
 
+  function _applyAnimationEndStyles(target) {
+    var styleObj = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  function fadeOut(element, duration) {
-    var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-    fadeInit(element, 1);
+    for (var cssPropertyName in styleObj) {
+      target.style[cssPropertyName] = styleObj[cssPropertyName];
+    }
+  }
 
-    var tick = function tick() {
-      element.style.opacity = +element.style.opacity - (new Date() - _last) / duration;
-      _last = +new Date();
+  function _getElementInnerHeight(element) {
+    return getComputedStyle(element).height;
+  }
 
-      if (+element.style.opacity > 0) {
-        window.requestAnimationFrame && requestAnimationFrame(tick) || setTimeout(tick, 16);
-      } else {
-        element.hidden = true;
+  function _getElementInnerWidth(element) {
+    return getComputedStyle(element).width;
+  }
 
-        if (callback) {
-          callback.call();
-        }
-      }
-    };
+  function _getExpandedElementDimensions(element) {
+    var dimensions = {}; // Ensure element is shown for accurate calculations
 
-    tick();
+    element.style.display = "block";
+    dimensions.width = _getElementInnerWidth(element);
+    dimensions.height = _getElementInnerHeight(element);
+    dimensions.borderWidth = _getElementBorderWidth(element);
+    dimensions.margin = _getElementMargin(element);
+    dimensions.padding = _getElementPadding(element); // Reset inline display
+
+    element.style.display = "";
+    return dimensions;
+  }
+
+  function _getElementPadding(element) {
+    return getComputedStyle(element).padding;
+  }
+
+  function _getElementBorderWidth(element) {
+    return getComputedStyle(element).borderWidth;
+  }
+
+  function _getElementMargin(element) {
+    return getComputedStyle(element).margin;
   }
 
   var Options = /*#__PURE__*/_createClass(function Options() {
@@ -319,8 +791,26 @@
     this.onClick = function () { };
   });
 
-  var _positionClasses = ["bottom-left", "bottom-right", "top-right", "top-left", "bottom-center", "top-center", "mid-center"];
-  var _defaultIcons = ["success", "error", "info", "warning"];
+  /**
+   * The events that can be listened for
+   */
+  var ToasteEvents = {
+    onShown: "toaste.on.shown",
+    onHidden: "toaste.on.hidden",
+    onHide: "toaste.on.hide",
+    onShow: "toaste.on.show"
+  };
+  /**
+   * The built in positional classes
+   */
+
+  var PositionClasses = ["bottom-left", "bottom-right", "top-right", "top-left", "bottom-center", "top-center", "mid-center"];
+  /**
+   * The built in icons
+   */
+
+  var DefaultIcons = ["success", "error", "info", "warning"];
+
   /**
    * ToastE Notifier core class responsible for core functionality
    * 
@@ -473,7 +963,7 @@
         if (this.options.icon) {
           this._toastEl.classList.add("toaste-has-icon");
 
-          if (this.options.icon && _defaultIcons.includes(this.options.icon)) {
+          if (this.options.icon && DefaultIcons.includes(this.options.icon)) {
             this._toastEl.classList.add("toaste-icon-".concat(this.options.icon));
           }
         } // Add custom class
@@ -490,7 +980,7 @@
     }, {
       key: "position",
       value: function position() {
-        if (typeof this.options.position === "string" && _positionClasses.indexOf(this.options.position) > -1) {
+        if (typeof this.options.position === "string" && PositionClasses.indexOf(this.options.position) > -1) {
           var containerRect = this._container.getBoundingClientRect(); // Set the position class or calculate for central values
 
 
@@ -543,7 +1033,7 @@
       value: function bindToast() {
         var that = this; // Register the event handler to hide/remove the loader
 
-        this._toastEl.addEventListener("toast.on.shown", function () {
+        this._toastEl.addEventListener(ToasteEvents.onShown, function () {
           that.processLoader();
         }); // Attach the close event for the close button
 
@@ -552,19 +1042,19 @@
 
 
         if (typeof this.options.beforeShow === "function") {
-          this._toastEl.addEventListener("toast.on.show", that.options.beforeShow(that._toastEl));
+          this._toastEl.addEventListener(ToasteEvents.onShow, that.options.beforeShow(that._toastEl));
         }
 
         if (typeof this.options.afterShown === "function") {
-          this._toastEl.addEventListener("toast.on.shown", that.options.afterShown(that._toastEl));
+          this._toastEl.addEventListener(ToasteEvents.onShown, that.options.afterShown(that._toastEl));
         }
 
         if (typeof this.options.beforeHide === "function") {
-          this._toastEl.addEventListener("toast.on.hide", that.options.beforeHide(that._toastEl));
+          this._toastEl.addEventListener(ToasteEvents.onHide, that.options.beforeHide(that._toastEl));
         }
 
         if (typeof this.options.afterHidden === "function") {
-          this._toastEl.addEventListener("toast.on.hidden", that.options.afterHidden(that._toastEl));
+          this._toastEl.addEventListener(ToasteEvents.onHidden, that.options.afterHidden(that._toastEl));
         }
 
         if (typeof this.options.onClick === "function") {
@@ -664,32 +1154,22 @@
       key: "animate",
       value: function animate() {
         var that = this;
-        var evBeforeShow = new CustomEvent("toaste.on.show");
 
         var afterShown = function afterShown() {
-          var afterShown = new CustomEvent("toast.on.shown");
-
-          that._toastEl.dispatchEvent(afterShown);
+          Utils.dispatchEvent(that._toastEl, ToasteEvents.onShown);
         };
 
+        var optionsAnimation = new AnimationOptions();
+        optionsAnimation.onAnimationEnd = afterShown;
         this._toastEl.style.display = 'none';
-
-        this._toastEl.dispatchEvent(evBeforeShow);
+        Utils.dispatchEvent(that._toastEl, ToasteEvents.onShow);
 
         if (this.options.showHideTransition.toLowerCase() === 'fade') {
-          fadeIn(this._toastEl, 400, afterShown);
+          FadeAnimation.fadeElement(this._toastEl, optionsAnimation).play();
         } else if (this.options.showHideTransition.toLowerCase() === 'slide') {
-          // expand(this._toastEl, 400, "UP", function () {
-          //     var afterShown = new CustomEvent("toast.on.shown");
-          //     that._toastEl.dispatchEvent(afterShown);
-          // });
-          fadeIn(this._toastEl, 400, afterShown);
+          expand(this._toastEl, 400, "UP", afterShown);
         } else {
-          // expand(this._toastEl, 400, "RIGHT", function () {
-          //     var afterShown = new CustomEvent("toast.on.shown");
-          //     that._toastEl.dispatchEvent(afterShown);
-          // });
-          fadeIn(this._toastEl, 400, afterShown);
+          expand(this._toastEl, 400, "RIGHT", afterShown);
         }
 
         if (this.canAutoHide()) {
@@ -727,33 +1207,38 @@
     }, {
       key: "closeToast",
       value: function closeToast(toastEInstance, event) {
+        var animationOptions;
+
         if (event) {
           event.preventDefault();
         }
 
         var animationEnd = function animationEnd() {
           toastEInstance._toastEl.style.display = "none";
-          var evToastHidden = new CustomEvent("toast.on.hidden");
-
-          toastEInstance._toastEl.dispatchEvent(evToastHidden);
+          Utils.dispatchEvent(toastEInstance._toastEl, ToasteEvents.onHidden);
 
           if (toastEInstance.autoCloseTimeout) {
             window.clearTimeout(toastEInstance.autoCloseTimeout);
           }
+        };
+
+        animationOptions = new AnimationOptions();
+        animationOptions.onAnimationEnd = animationEnd;
+        animationOptions.startStyle = {
+          opacity: toastEInstance._toastEl.style.opacity
+        };
+        animationOptions.endStyle = {
+          opacity: 0
         }; // Dispatch event to trigger any event listeners
 
-
-        var evToastHide = new CustomEvent("toast.on.hide");
-
-        toastEInstance._toastEl.dispatchEvent(evToastHide);
+        Utils.dispatchEvent(toastEInstance._toastEl, ToasteEvents.onHide);
 
         if (toastEInstance.options.showHideTransition === "fade") {
-          fadeOut(toastEInstance._toastEl, 400, animationEnd);
+          FadeAnimation.fadeElement(toastEInstance._toastEl, animationOptions).play();
         } else if (toastEInstance.options.showHideTransition === "slide") {
-          // slideUp(toastEInstance._toastEl, 400, animationEnd);
-          fadeOut(toastEInstance._toastEl, 400, animationEnd);
+          collapse(toastEInstance._toastEl, 400, "DOWN", animationEnd);
         } else {
-          fadeOut(toastEInstance._toastEl, 400, animationEnd);
+          collapse(toastEInstance._toastEl, 400, "LEFT", animationEnd);
         }
       }
     }]);
@@ -815,8 +1300,9 @@
 
   if (typeof window !== 'undefined') {
     window.ToastENotifier = ToastENotifier;
+    window.fadeElement = FadeAnimation.fadeElement;
   }
 
   return ToastENotifier;
 
-}));
+})));
