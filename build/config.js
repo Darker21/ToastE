@@ -39,7 +39,7 @@ const builds = {
     },
     'web-umd-dev': {
         entry: resolvePath('src/toaste-notifier.js'),
-        dest: resolvePath('dist/toaste-notifier.js'),
+        dest: resolvePath('samples/ToastE.js'),
         format: 'umd',
         env: 'development',
         banner

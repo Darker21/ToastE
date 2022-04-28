@@ -52,41 +52,24 @@
 <a href="https://www.npmjs.com/package/toaste-notifier"><img src="https://img.shields.io/npm/v/toaste-notifier?logo=npm" alt="npm"></a></p>
 <h2>About</h2>
 <p>ToastE Notifier is a vanilla JS version of the existing <a href="https://github.com/kamranahmedse/jquery-toast-plugin">jquery-toast-plugin</a> made to comply with strict Content-Secrity-Policies and reduce dependencies.</p>
-<p>All existing functionality found within the jquery-toast-plugin has been transpiled to pure JS.</p>
+<p>All existing functionality found within the jquery-toast-plugin has been transpliled to pure JS.</p>
 <h2>Changes</h2>
 <p>As part of the transpiling, I included some minor changes, including:</p>
 <ul>
 <li>
-<p>Removing usage of <code>HTMLElement.innerHtml</code> and <code>HTMLElement.outerHtml</code> to prevent potential XSS attacks</p>
+<p>Usage of <code>HTMLElement.innerHtml</code> and <code>HTMLElement.outerHtml</code> to prevent potential XSS attacks</p>
 </li>
 <li>
-<p>SASS powered stylesheets with default integration for integrated theming with a sites pre-existing SASS (In-Progress)</p>
+<p>SASS powered stylesheets with default integration for integrated theming with a sites pre-existing SASS</p>
 </li>
 </ul>
 <h2>How to use</h2>
 <ul>
 <li>
-<p>You can install the plugin:</p>
-<ul>
-<li>
-<p>via <code>npm</code></p>
+<p>You can install the plugin via <code>npm</code></p>
 <pre class="prettyprint source lang-js"><code>npm install --save toaste-notification
 </code></pre>
-</li>
-<li>
-<p>Direct &lt;script&gt; include</p>
-<pre class="prettyprint source lang-html"><code>&lt;head>
-  ...
-  &lt;script src=&quot;https://cdn.jsdelivr.net/npm/toaste-notifier&quot; defer>&lt;/script>
-  &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.jsdelivr.net/npm/toaste-notifier@1.0.0-alpha4/dist/css/toaste-notifier.min.css&quot;>
-  ...
-&lt;/head>
-</code></pre>
-</li>
-<li>
-<p>Or directly download the repository and place the content of <code>dist</code> wherever you can access them. (please note, there are multiple versions available depending on your browser requirements)</p>
-</li>
-</ul>
+<p>Or directly download the repository and place the content of <code>dist</code> wherever you can access them.</p>
 </li>
 <li>
 <p>Include the CSS and JS files.</p>
@@ -96,65 +79,7 @@
 </li>
 </ul>
 <h2>Examples</h2>
-<h3>Simple textual toast</h3>
-<pre class="prettyprint source lang-javascript"><code>// Non sticky version
-new ToastENotifier(&quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, consequuntur doloremque eveniet eius eaque dicta repudiandae illo ullam. Minima itaque sint magnam dolorum asperiores repudiandae dignissimos expedita, voluptatum vitae velit.&quot;)
-// Sticky version
-new ToastENotifier({
-  text : &quot;Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, consequuntur doloremque eveniet eius eaque dicta repudiandae illo ullam. Minima itaque sint magnam dolorum asperiores repudiandae dignissimos expedita, voluptatum vitae velit.&quot;,
-  hideAfter : false
-})
-</code></pre>
-<h3>Unordered list elements as the text of toast using array</h3>
-<pre class="prettyprint source lang-javascript"><code>// Non sticky version
-new ToastENotifier([&quot;Ubuntu : One of it's kind&quot;, &quot;Sublime Text : Productivity unleashed&quot;, &quot;HeidiSQL : Just love it&quot;, &quot;Github : Just Lovely&quot;])
-// Sticky version
-new ToastENotifier({
-  text : [&quot;Ubuntu : One of it's kind&quot;, &quot;Sublime Text : Productivity unleashed&quot;, &quot;HeidiSQL : Just love it&quot;, &quot;Github : Just Lovely&quot;],
-  hideAfter : false
-})
-</code></pre>
-<h3>Changing the animations <em>(In Progress)</em></h3>
-<pre class="prettyprint source lang-javascript"><code>new ToastENotifier({ 
-  text : &quot;Let's test some stuff...&quot;, 
-  showHideTransition : 'slide'  // It can be plain, fade or slide
-})
-</code></pre>
-<h3>Changing the formatting</h3>
-<pre class="prettyprint source lang-javascript"><code>new ToastENotifier({ 
-  text : &quot;Let's test some stuff...&quot;, 
-  showHideTransition : 'slide',  // It can be plain, fade or slide
-  bgColor : 'blue',              // Background color for toast
-  textColor : '#eee',            // text color
-  allowToastClose : false,       // Show the close button or not
-  hideAfter : 5000,              // `false` to make it sticky or time in miliseconds to hide after
-  stack : 5,                     // `fakse` to show one stack at a time count showing the number of toasts that can be shown at once
-  textAlign : 'left',            // Alignment of text i.e. left, right, center
-  position : 'bottom-left'       // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values to position the toast on page
-})
-</code></pre>
-<h3>Resetting the toast</h3>
-<pre class="prettyprint source lang-javascript"><code>var myToast = new ToastENotifier('Some toast that needs to be removed.');
-myToast.reset(); // remove the toast &quot;Some toast that needs to be removed&quot;
-</code></pre>
-<p>What if I want to reset all the toasts at once? You may ask. Well in that case, you can do the following:</p>
-<pre class="prettyprint source lang-javascript"><code>new ToastENotifier().reset('all');
-</code></pre>
-<h3>Updating the toast</h3>
-<p>Suppose, you had shown some toast upon the page, a sticky toast for example and now you want to update the toast. You can do the following</p>
-<pre class="prettyprint source lang-javascript"><code>var myToast = new ToastENotifier({
-  text : 'Some toast that needs to show the success message after the ajax call.',
-  hideAfter : false,
-  bgColor : '#E01A31'
-});
-window.setTimeout(function(){
-  myToast.update({
-    text : 'Updated after a few seconds',
-    bgColor : '#23B65D'
-  });
-}, 5000);
-</code></pre>
-<p>Since this is a refreshed version of the original JQuery Toast Plugin, you can use the orginal site <a href="http://kamranahmed.info/toast">http://kamranahmed.info/toast</a> for options on how to modify your Toast Notifications. The only thing you will need to change is <code>$.toast(...)</code> to <code>new ToastENotifier(...)</code></p>
+<p><em>To be written</em></p>
 <h2>Features</h2>
 <ul>
 <li>
@@ -171,18 +96,19 @@ window.setTimeout(function(){
 <ul>
 <li><strong>Array</strong> (It's elements will be changed to an un ordered list)</li>
 <li><strong>Simple text</strong></li>
+<li><strong>HTML</strong></li>
 </ul>
 </li>
 <li>
 <p><strong>Events support</strong> i.e. <code>beforeHide</code>, <code>afterHidden</code>, <code>beforeShow</code>, <code>afterShown</code></p>
 </li>
 <li>
-<p><code>Fade</code> and <code>Slide</code> show/hide transitions support (Currently In Progress)</p>
+<p><code>Fade</code> and <code>Slide</code> show/hide transitions support (More to come)</p>
 </li>
 <li>
 <p>Supports showing the loader for the toast</p>
 <ul>
-<li>You can <strong>position the toast, wherever you want</strong> there is support for <code>top-left</code>, <code>top-right</code> <code>bottom-left</code> and <strong>bottom-right</strong>, <code>top-center</code>, <code>bottom-center</code> and <code>mid-center</code> ...sighs! That's a whole lot of options, isn't it? No, you say. Ok then here is the most exciting thing, you can also introduce <strong>your own positioning</strong> just <strong>by passing a simple JS object</strong> containing <code>{ top: - , bottom: -, left: -, right: - }</code></li>
+<li>You can <strong>position the toast, wherever you want</strong> there is support for <code>top-left</code>, <code>top-right</code> <code>bottom-left</code> and <strong>bottom-right</strong>, <code>top-center</code>, <code>bottom-center</code> and <code>mid-center</code> ...sighs! That's a whole lot of options, isn't it? No, you say. Ok then here is the most exciting thing, you can also introduce <strong>your own positioning</strong> just <strong>by passing a simple js object</strong> containing <code>{ top: - , bottom: -, left: -, right: - }</code></li>
 </ul>
 </li>
 <li>
@@ -206,13 +132,13 @@ window.setTimeout(function(){
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ToastE-Notifier.html">ToastE-Notifier</a></li></ul><h3>Classes</h3><ul><li><a href="FadeAnimation.html">FadeAnimation</a></li><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_applyClasses">_applyClasses</a></li><li><a href="global.html#_applyStyles">_applyStyles</a></li><li><a href="global.html#_expandInit">_expandInit</a></li><li><a href="global.html#collapse">collapse</a></li><li><a href="global.html#expand">expand</a></li><li><a href="global.html#expandElement">expandElement</a></li><li><a href="global.html#expandVertical">expandVertical</a></li><li><a href="global.html#extend">extend</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#fadeOut">fadeOut</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ToastE-Notifier.html">ToastE-Notifier</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li><li><a href="module-ToastE-Notifier-ToastENotifier.html">ToastENotifier</a></li></ul><h3>Global</h3><ul><li><a href="global.html#collapse">collapse</a></li><li><a href="global.html#expand">expand</a></li><li><a href="global.html#extend">extend</a></li><li><a href="global.html#fadeIn">fadeIn</a></li><li><a href="global.html#fadeOut">fadeOut</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Mon Feb 21 2022 18:20:00 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Thu Apr 28 2022 19:11:24 GMT+0100 (British Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

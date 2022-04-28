@@ -7,34 +7,36 @@ orbs:
   # Orbs reduce the amount of configuration required for common tasks.
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
   node: circleci/node@4.7
+  snyk: snyk/snyk@1.1.2
   defaults: &defaults
+    working_directory: ~/repo/tmp
     docker:
       - image: cimg/node:16.10
 
 jobs:
-
-  build:
+  download-deps:
     <<: *defaults
     steps:
       - run:
           name:  Download cc-test-reporter
           command: |
-            mkdir -p tmp/
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
-            chmod +x ./tmp/cc-test-reporter
+            mkdir -p repo/tmp/
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./repo/tmp/cc-test-reporter
+            chmod +x ./repo/tmp/cc-test-reporter
       - persist_to_workspace:
-          root: tmp
+          root: ./repo/tmp
           paths:
             - cc-test-reporter
+      - run:
+          name: List Files
+          command: ls -la
 
-  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  test:
+  setup-environment:
     <<: *defaults
-    # Then run your tests!
-    # CircleCI will report the results back to your VCS provider.
-    steps:
+    steps: 
       # Checkout the code as the first step.
-      - checkout
+      - checkout:
+          path: ~/repo/tmp
       - attach_workspace:
           at: ~/repo/tmp
       # Next, the node orb's install-packages step will install the dependencies from a package.json.
@@ -42,6 +44,28 @@ jobs:
       - node/install-packages:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: npm
+
+
+  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
+  test:
+    <<: *defaults
+    # Then run your tests!
+    # CircleCI will report the results back to your VCS provider.
+    steps:
+      - checkout:
+          path: ~/repo/tmp
+      - attach_workspace:
+          at: ~/repo/tmp
+      # Next, the node orb's install-packages step will install the dependencies from a package.json.
+      # The orb install-packages step will also automatically cache them for faster future runs.
+      - node/install-packages:
+          # If you are using yarn, change the line below from "npm" to "yarn"
+          pkg-manager: npm
+      - run:
+          name: list file
+          command: ls -la && echo $PWD
+      - attach_workspace:
+          at: ~/repo/tmp
       - run:
           name: Run tests
           command: |
@@ -51,14 +75,48 @@ jobs:
   upload-coverage:
     <<: *defaults
     environment:
-      CC_TEST_REPORTER_ID: 9c1e8373b962c023d7ac2bbb4a213871762505b97f891c904e106ca0630c745e
+      CC_TEST_REPORTER_ID: $CC_API_KEY
     steps:
       - attach_workspace:
           at: ~/repo/tmp
       - run:
-          name: Uplaod coverage results to Code Climate
+          name: Upload coverage results to Code Climate
           command : |
               ./tmp/cc-test-reporter upload-coverage -i tmp/codeclimate.npm.json
+
+  scan-vulnerabilities:
+    <<: *defaults
+    environment: 
+      SNYK_TOKEN: $SNYK_API_KEY
+    steps: 
+      - snyk/scan:
+          token-variable: SNYK_TOKEN 
+          fail-on-issues: true
+          command: test
+          target-file: ~/repo/tmp/dist/toaste-notifier.js
+          monitor-on-build: true
+          protect: false
+          severity-threshold: medium
+          os: linux
+  
+  build:
+    <<: *defaults
+    steps:
+      - run:
+          name: Package build
+          command: npm run build
+
+  publish:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo/tmp
+      - run:
+          name: Auth with NPM
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_API_KEY" > ~/repo/tmp/.npmrc
+      - run:
+          name: Publish Package
+          command: npm publish 
 
 
 workflows:
@@ -68,12 +126,31 @@ workflows:
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
   build-test:
     jobs:
-      - build
-      - test:
+      - download-deps:
+          context: NPM
+      - setup-environment:
+          context: NPM
           requires:
-            - build
+            - download-deps
+      - test:
+          context: NPM
+          requires:
+            - setup-environment
       - upload-coverage:
+          context: NPM
           requires:
             - test
+      - build:
+          context: NPM
+          requires:
+            - test
+      - scan-vulnerabilities:
+          context: NPM
+          requires:
+            - build
+      - publish:
+          context: NPM
+          requires:
+            - scan-vulnerabilities
       # For running simple node tests, you could optionally use the node/test job from the orb to replicate and replace the job above in fewer lines.
       # - node/test
