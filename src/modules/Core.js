@@ -4,6 +4,7 @@ import { expand, collapse } from './animations/expand';
 import { Options } from './settings/Options';
 import AnimationOptions from './settings/AnimationOptions';
 import { ToasteEvents, PositionClasses, DefaultIcons } from './lib/Constants';
+import ExpandAnimation from './animations/expansion';
 
 /**
  * ToastE Notifier core class responsible for core functionality
@@ -366,7 +367,7 @@ export default class Core {
         } else if (this.options.showHideTransition.toLowerCase() === 'slide') {
             expand(this._toastEl, 400, "UP", afterShown);
         } else {
-            expand(this._toastEl, 400, "RIGHT", afterShown);
+            ExpandAnimation.expandElement(this._toastEl, optionsAnimation).play();
         }
 
         if (this.canAutoHide()) {
@@ -377,7 +378,7 @@ export default class Core {
 
     reset(all = true) {
         if (all) {
-            document.querySelectorAll('.toaste-wrap').forEach(el => el.remove());
+            document.querySelectorAll('.toaste-wrap').forEach(el => { el.remove(); });
         } else {
             this._toastEl.parentElement.removeChild(this._toastEl);
             this._toastEl = null;

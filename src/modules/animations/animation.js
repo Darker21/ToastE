@@ -4,12 +4,22 @@ import AnimationOptions from "../settings/AnimationOptions";
  * The Animation class is a base class for all animations.
 */
 export default class Animation {
+    /**
+     * @param {HTMLElement} element element Animating
+     */
     constructor(element) {
         this.target = element;
 
         this.options = new AnimationOptions();
         this._tickTimeout = null;
         this._reverseAnimation = false;
+    }
+
+    /**
+     * @returns {CSSStyleDeclaration} current styles on `this.target`
+     */
+    get style() {
+        return this.target.style;
     }
 
     play() {
@@ -39,7 +49,8 @@ export default class Animation {
     }
 
     resume() {
-        throw new Error("Animation method not implemented.");
+        this._last = +new Date();
+        this._tick();
     }
 
     reverse() {
@@ -83,6 +94,18 @@ export default class Animation {
         this.options.startStyle = endStyle;
         this.options.endClasses = startClasses;
         this.options.endStyle = startStyle;
+    }
+
+    /**
+     * It takes a string like "10px" and returns an object like {value: 10, units: "px"}
+     * @param {string} propValue - The value of the CSS property you want to parse.
+     * @returns An object with two properties: value and units.
+     */
+    _parseCssValue(propValue) {
+        return {
+            value: +propValue.replace(/[^0-9.]+$/g, ""),
+            units: propValue.replace(/[0-9.]/g, "")
+        };
     }
 
 } 

@@ -3,12 +3,10 @@
  * (c) 2022-2022 Jacob Darker
  * Released under the MIT License.
  */
-(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['ToastE-Notifier'] = factory());
-}(this, (function () {
-  'use strict';
+(function (factory) {
+  typeof define === 'function' && define.amd ? define(factory) :
+  factory();
+})((function () { 'use strict';
 
   function _typeof(obj) {
     "@babel/helpers - typeof";
@@ -100,7 +98,7 @@
     if (typeof Proxy === "function") return true;
 
     try {
-      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () { }));
+      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
       return true;
     } catch (e) {
       return false;
@@ -130,7 +128,7 @@
 
     return function _createSuperInternal() {
       var Super = _getPrototypeOf(Derived),
-        result;
+          result;
 
       if (hasNativeReflectConstruct) {
         var NewTarget = _getPrototypeOf(this).constructor;
@@ -215,7 +213,7 @@
         if (it) o = it;
         var i = 0;
 
-        var F = function () { };
+        var F = function () {};
 
         return {
           s: F,
@@ -239,8 +237,8 @@
     }
 
     var normalCompletion = true,
-      didErr = false,
-      err;
+        didErr = false,
+        err;
     return {
       s: function () {
         it = it.call(o);
@@ -264,136 +262,6 @@
     };
   }
 
-  var AnimationOptions = /*#__PURE__*/_createClass(function AnimationOptions() {
-    _classCallCheck(this, AnimationOptions);
-
-    this.endStyle = {};
-    this.startStyle = {};
-    this.currentStyle = {};
-    this.duration = 400;
-    this.frameRate = 16;
-    this.classes = {};
-    this.currentClasses = [];
-    this.endClasses = [];
-    this.startClasses = [];
-    this.onAnimationEnd = undefined;
-    this.onAnimationStart = undefined;
-    this.onAnimationTick = undefined;
-  });
-
-  /**
-   * The Animation class is a base class for all animations.
-  */
-
-  var Animation = /*#__PURE__*/function () {
-    function Animation(element) {
-      _classCallCheck(this, Animation);
-
-      this.target = element;
-      this.options = new AnimationOptions();
-      this._tickTimeout = null;
-      this._reverseAnimation = false;
-    }
-
-    _createClass(Animation, [{
-      key: "play",
-      value: function play() {
-        var _this$options$onAnima;
-
-        this.reset();
-        (_this$options$onAnima = this.options.onAnimationStart) === null || _this$options$onAnima === void 0 ? void 0 : _this$options$onAnima.call();
-        this.resume();
-      }
-    }, {
-      key: "stop",
-      value: function stop() {
-        window.clearTimeout(this._tickTimeout);
-
-        this._applyClasses(this.target, this.options.endClasses);
-
-        this._applyStyles(this.target, this.options.endStyle);
-      }
-    }, {
-      key: "reset",
-      value: function reset() {
-        this._applyStyles(this.target, this.options.startStyle);
-
-        this._applyClasses(this.target, this.options.startClasses);
-      }
-    }, {
-      key: "pause",
-      value: function pause() {
-        if (this._tickTimeout) {
-          window.clearTimeout(this._tickTimeout);
-        }
-      }
-    }, {
-      key: "resume",
-      value: function resume() {
-        throw new Error("Animation method not implemented.");
-      }
-    }, {
-      key: "reverse",
-      value: function reverse() {
-        this._swapStartEndElementProps();
-
-        this.options.reverse = true;
-        this.reset();
-        this.resume();
-      }
-    }, {
-      key: "_tick",
-      value: function _tick() {
-        var _this$options$onAnima2;
-
-        (_this$options$onAnima2 = this.options.onAnimationTick) === null || _this$options$onAnima2 === void 0 ? void 0 : _this$options$onAnima2.call();
-      }
-      /**
-       * It applies the styles in the styleObj to the Element.
-       * @param {HTMLElement} element - The Element to apply the styles to.
-       * @param {Object} styleObj - The object containing the styles to apply.
-       */
-
-    }, {
-      key: "_applyStyles",
-      value: function _applyStyles(element, styleObj) {
-        for (var cssPropertyName in styleObj) {
-          element.style[cssPropertyName] = styleObj[cssPropertyName];
-        }
-      }
-      /**
-       * Apply the classes in the classList to the Element.
-       * @param {HTMLElement} element - The Element to apply the classes to.
-       * @param {Array<string>} classList - A list of class names to be added to the Element.
-       */
-
-    }, {
-      key: "_applyClasses",
-      value: function _applyClasses(element, classList) {
-        for (var className in classList) {
-          if (!element.classList.contains(className)) {
-            element.classList.add(className);
-          }
-        }
-      }
-    }, {
-      key: "_swapStartEndElementProps",
-      value: function _swapStartEndElementProps() {
-        var _this$options = this.options,
-          startStyle = _this$options.startStyle,
-          endStyle = _this$options.endStyle,
-          startClasses = _this$options.startClasses,
-          endClasses = _this$options.endClasses;
-        this.options.startClasses = endClasses;
-        this.options.startStyle = endStyle;
-        this.options.endClasses = startClasses;
-        this.options.endStyle = startStyle;
-      }
-    }]);
-
-    return Animation;
-  }();
-
   /**
    * Generic functions which are not dependent on ToastE
   */
@@ -405,18 +273,18 @@
     _createClass(Utils, null, [{
       key: "bind",
       value:
-        /**
-         * Create a new function that binds the current object to the first parameter of the original
-         * function
-         * @param {Function} fn - The function to bind.
-         * @param {any} me - the object that the function is bound to.
-         * @returns {Function} A function that is bound to the object.
-         */
-        function bind(fn, me) {
-          return function () {
-            return fn.apply(me, arguments);
-          };
-        }
+      /**
+       * Create a new function that binds the current object to the first parameter of the original
+       * function
+       * @param {Function} fn - The function to bind.
+       * @param {any} me - the object that the function is bound to.
+       * @returns {Function} A function that is bound to the object.
+       */
+      function bind(fn, me) {
+        return function () {
+          return fn.apply(me, arguments);
+        };
+      }
       /**
        * Returns true if the item is an object and not an array and not null.
        * @param {any} item - The item to check.
@@ -440,6 +308,18 @@
         return _toConsumableArray(new Set([].concat(_toConsumableArray(Object.getOwnPropertyNames(document)), _toConsumableArray(Object.getOwnPropertyNames(Object.getPrototypeOf(Object.getPrototypeOf(document)))), _toConsumableArray(Object.getOwnPropertyNames(Object.getPrototypeOf(window)))).filter(function (k) {
           return k.startsWith("on") && (document[k] == null || typeof document[k] == "function");
         })));
+      }
+    }, {
+      key: "getCalculatedStyle",
+      value: function getCalculatedStyle(element, cssProp) {
+        var elementStyles;
+
+        if (typeof cssProp !== "string" || element instanceof HTMLElement === false) {
+          return null;
+        }
+
+        elementStyles = window.getComputedStyle(element);
+        return elementStyles.getPropertyValue(cssProp);
       }
       /**
        * Dispatch an event on an element.
@@ -523,8 +403,165 @@
     return Utils;
   }();
 
-  /* Creates a new instance of the Fade Animation class */
+  var AnimationOptions = /*#__PURE__*/_createClass(function AnimationOptions() {
+    _classCallCheck(this, AnimationOptions);
 
+    this.endStyle = {};
+    this.startStyle = {};
+    this.currentStyle = {};
+    this.duration = 400;
+    this.frameRate = 16;
+    this.classes = {};
+    this.currentClasses = [];
+    this.endClasses = [];
+    this.startClasses = [];
+    this.onAnimationEnd = undefined;
+    this.onAnimationStart = undefined;
+    this.onAnimationTick = undefined;
+  });
+
+  /**
+   * The Animation class is a base class for all animations.
+  */
+
+  var Animation = /*#__PURE__*/function () {
+    /**
+     * @param {HTMLElement} element element Animating
+     */
+    function Animation(element) {
+      _classCallCheck(this, Animation);
+
+      this.target = element;
+      this.options = new AnimationOptions();
+      this._tickTimeout = null;
+      this._reverseAnimation = false;
+    }
+    /**
+     * @returns {CSSStyleDeclaration} current styles on `this.target`
+     */
+
+
+    _createClass(Animation, [{
+      key: "style",
+      get: function get() {
+        return this.target.style;
+      }
+    }, {
+      key: "play",
+      value: function play() {
+        var _this$options$onAnima;
+
+        this.reset();
+        (_this$options$onAnima = this.options.onAnimationStart) === null || _this$options$onAnima === void 0 ? void 0 : _this$options$onAnima.call();
+        this.resume();
+      }
+    }, {
+      key: "stop",
+      value: function stop() {
+        window.clearTimeout(this._tickTimeout);
+
+        this._applyClasses(this.target, this.options.endClasses);
+
+        this._applyStyles(this.target, this.options.endStyle);
+      }
+    }, {
+      key: "reset",
+      value: function reset() {
+        this._applyStyles(this.target, this.options.startStyle);
+
+        this._applyClasses(this.target, this.options.startClasses);
+      }
+    }, {
+      key: "pause",
+      value: function pause() {
+        if (this._tickTimeout) {
+          window.clearTimeout(this._tickTimeout);
+        }
+      }
+    }, {
+      key: "resume",
+      value: function resume() {
+        this._last = +new Date();
+
+        this._tick();
+      }
+    }, {
+      key: "reverse",
+      value: function reverse() {
+        this._swapStartEndElementProps();
+
+        this.options.reverse = true;
+        this.reset();
+        this.resume();
+      }
+    }, {
+      key: "_tick",
+      value: function _tick() {
+        var _this$options$onAnima2;
+
+        (_this$options$onAnima2 = this.options.onAnimationTick) === null || _this$options$onAnima2 === void 0 ? void 0 : _this$options$onAnima2.call();
+      }
+      /**
+       * It applies the styles in the styleObj to the Element.
+       * @param {HTMLElement} element - The Element to apply the styles to.
+       * @param {Object} styleObj - The object containing the styles to apply.
+       */
+
+    }, {
+      key: "_applyStyles",
+      value: function _applyStyles(element, styleObj) {
+        for (var cssPropertyName in styleObj) {
+          element.style[cssPropertyName] = styleObj[cssPropertyName];
+        }
+      }
+      /**
+       * Apply the classes in the classList to the Element.
+       * @param {HTMLElement} element - The Element to apply the classes to.
+       * @param {Array<string>} classList - A list of class names to be added to the Element.
+       */
+
+    }, {
+      key: "_applyClasses",
+      value: function _applyClasses(element, classList) {
+        for (var className in classList) {
+          if (!element.classList.contains(className)) {
+            element.classList.add(className);
+          }
+        }
+      }
+    }, {
+      key: "_swapStartEndElementProps",
+      value: function _swapStartEndElementProps() {
+        var _this$options = this.options,
+            startStyle = _this$options.startStyle,
+            endStyle = _this$options.endStyle,
+            startClasses = _this$options.startClasses,
+            endClasses = _this$options.endClasses;
+        this.options.startClasses = endClasses;
+        this.options.startStyle = endStyle;
+        this.options.endClasses = startClasses;
+        this.options.endStyle = startStyle;
+      }
+      /**
+       * It takes a string like "10px" and returns an object like {value: 10, units: "px"}
+       * @param {string} propValue - The value of the CSS property you want to parse.
+       * @returns An object with two properties: value and units.
+       */
+
+    }, {
+      key: "_parseCssValue",
+      value: function _parseCssValue(propValue) {
+        return {
+          value: +propValue.replace(/[^0-9.]+$/g, ""),
+          units: propValue.replace(/[0-9.]/g, "")
+        };
+      }
+    }]);
+
+    return Animation;
+  }();
+
+  /* Creates a new instance of the Fade Animation class */
 
   var FadeAnimation = /*#__PURE__*/function (_Animation) {
     _inherits(FadeAnimation, _Animation);
@@ -780,15 +817,15 @@
     this.textAlign = "left";
     this.icon = false;
 
-    this.beforeShow = function () { };
+    this.beforeShow = function () {};
 
-    this.afterShown = function () { };
+    this.afterShown = function () {};
 
-    this.beforeHide = function () { };
+    this.beforeHide = function () {};
 
-    this.afterHide = function () { };
+    this.afterHide = function () {};
 
-    this.onClick = function () { };
+    this.onClick = function () {};
   });
 
   /**
@@ -811,6 +848,99 @@
 
   var DefaultIcons = ["success", "error", "info", "warning"];
 
+  var ExpandAnimation = /*#__PURE__*/function (_Animation) {
+    _inherits(ExpandAnimation, _Animation);
+
+    var _super = _createSuper(ExpandAnimation);
+
+    function ExpandAnimation(element, objProps) {
+      var _this;
+
+      _classCallCheck(this, ExpandAnimation);
+
+      var elHeight;
+      _this = _super.call(this, element);
+      _this.options.startStyle = {
+        height: '0px'
+      }; // ensure visible
+
+      element.style.display = "";
+      elHeight = Utils.getCalculatedStyle(element, "height");
+      _this.options.endStyle = {
+        height: _this._parseCssValue(elHeight).value.toString()
+      };
+      _this.options = Utils.extend(objProps || {}, _this.options);
+      return _this;
+    }
+
+    _createClass(ExpandAnimation, [{
+      key: "play",
+      value: function play() {
+        this.target.style.display = this.target.style.display !== "none" || ""; // if the last tick was less than 0.5s, resume
+
+        var resume = +new Date() - (this._last || 0) < 500;
+
+        if (resume) {
+          this.resume();
+        } else {
+          this.reset();
+          this.resume();
+        }
+      }
+    }, {
+      key: "_tick",
+      value: function _tick() {
+        var _this$options$onAnima;
+
+        var denominator, animationFinish, calculatedHeight, currentHeight, startHeight, endHeight;
+
+        _get(_getPrototypeOf(ExpandAnimation.prototype), "_tick", this).call(this);
+
+        startHeight = this._parseCssValue(this.options.startStyle.height);
+        endHeight = this._parseCssValue(this.options.endStyle.height);
+        console.log(startHeight, endHeight); // Get units being used (Most likely px)
+
+        currentHeight = this._parseCssValue(this.style.height); // Calculate height
+        // TODO  this is calculating a value WAY too small - needs to default if value is too small (maybe 0.25px increment)
+
+        denominator = startHeight.value > endHeight.value ? Math.abs(this.options.duration) * -1 : Math.abs(this.options.duration);
+        calculatedHeight = (currentHeight.value || 1) * ((new Date() - this._last) / denominator);
+
+        if (Math.abs(currentHeight.value - Math.abs(calculatedHeight)) < 1e-3) {
+          this._tickTimeout = setTimeout(Utils.bind(this._tick, this), this.options.frameRate);
+          return;
+        }
+        console.log(calculatedHeight, this.style.height);
+        this.style.height = calculatedHeight + currentHeight.units; // Update _last to now
+
+        this._last = +new Date(); // Calculate new height and whether it has reached the target
+
+        if (startHeight.value > endHeight.value) {
+          animationFinish = +this._parseCssValue(this.style.height).value <= endHeight.value;
+        } else {
+          animationFinish = +this._parseCssValue(this.style.height).value >= endHeight.value;
+        } // Check if the target opacity has been met
+
+
+        animationFinish ? (_this$options$onAnima = this.options.onAnimationEnd) === null || _this$options$onAnima === void 0 ? void 0 : _this$options$onAnima.call() : this._tickTimeout = setTimeout(Utils.bind(this._tick, this), this.options.frameRate);
+      }
+      /**
+       * It creates an ExpandAnimation object.
+       * @param element - The element to animate.
+       * @param animationProps - The animation properties that are passed to the animation constructor.
+       * @returns The ExpandAnimation object.
+       */
+
+    }], [{
+      key: "expandElement",
+      value: function expandElement(element, animationProps) {
+        return new ExpandAnimation(element, animationProps);
+      }
+    }]);
+
+    return ExpandAnimation;
+  }(Animation);
+
   /**
    * ToastE Notifier core class responsible for core functionality
    * 
@@ -826,15 +956,15 @@
     _createClass(Core, [{
       key: "init",
       value:
-        /**
-         * The initializer method for the ToastE notification library
-         * @param {string | string[] | Options()} [opts=Options] The Options object or the toast notification text
-         */
-        function init() {
-          var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Options();
-          this.prepareOptions(opts, new Options());
-          this.process();
-        }
+      /**
+       * The initializer method for the ToastE notification library
+       * @param {string | string[] | Options()} [opts=Options] The Options object or the toast notification text
+       */
+      function init() {
+        var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Options();
+        this.prepareOptions(opts, new Options());
+        this.process();
+      }
       /**
        * Prepares the Options for the Toast Notification before handling any functionality
        * @param {Options | string | string[]} options The new Options object or toast notifications desired text
@@ -1105,7 +1235,7 @@
             toastsRemoving = Array.from(_container.querySelectorAll(".toaste-single").values()).slice(0, extraToastCount);
 
             var _iterator = _createForOfIteratorHelper(toastsRemoving),
-              _step;
+                _step;
 
             try {
               for (_iterator.s(); !(_step = _iterator.n()).done;) {
@@ -1169,7 +1299,7 @@
         } else if (this.options.showHideTransition.toLowerCase() === 'slide') {
           expand(this._toastEl, 400, "UP", afterShown);
         } else {
-          expand(this._toastEl, 400, "RIGHT", afterShown);
+          ExpandAnimation.expandElement(this._toastEl, optionsAnimation).play();
         }
 
         if (this.canAutoHide()) {
@@ -1183,7 +1313,7 @@
 
         if (all) {
           document.querySelectorAll('.toaste-wrap').forEach(function (el) {
-            return el.remove();
+            el.remove();
           });
         } else {
           this._toastEl.parentElement.removeChild(this._toastEl);
@@ -1300,9 +1430,8 @@
 
   if (typeof window !== 'undefined') {
     window.ToastENotifier = ToastENotifier;
-    window.fadeElement = FadeAnimation.fadeElement;
   }
 
-  return ToastENotifier;
+  output.exports = ToastENotifier;
 
-})));
+}));

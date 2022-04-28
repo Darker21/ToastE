@@ -43,4 +43,4 @@ if (typeof window !== 'undefined') {
     window.ToastENotifier = ToastENotifier;
 }
 
-export default ToastENotifier;
+output.exports = ToastENotifier;

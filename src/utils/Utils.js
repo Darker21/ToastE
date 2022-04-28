@@ -40,6 +40,17 @@ export default class Utils {
         ].filter(k => k.startsWith("on") && (document[k] == null || typeof document[k] == "function")))];
     }
 
+    static getCalculatedStyle(element, cssProp) {
+        var elementStyles;
+
+        if (typeof (cssProp) !== "string" || element instanceof HTMLElement === false) {
+            return null;
+        }
+
+        elementStyles = window.getComputedStyle(element);
+        return elementStyles.getPropertyValue(cssProp);
+    }
+
     /**
      * Dispatch an event on an element.
      * @param {HTMLElement} element - The element that will be used to dispatch the event.
