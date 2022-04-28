@@ -17,13 +17,16 @@
         ],
         "object-curly-spacing": [
             "error",
-            " "
-        ]
+            "always"
+        ],
+        "require-jsdoc": "off"
     },
     "ignorePatterns": [
         "dist/",
         "assets/",
         "node_modules/",
-        "test/coverage/"
+        "test/coverage/",
+        "docs/",
+        "samples/"
     ]
 }

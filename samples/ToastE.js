@@ -1,35 +1,36 @@
-/*!
+/* !
  * ToastE-Notifier v1.0.0-alpha4
  * (c) 2022-2022 Jacob Darker
  * Released under the MIT License.
  */
-(function (factory) {
+(function(factory) {
   typeof define === 'function' && define.amd ? define(factory) :
   factory();
-})((function () { 'use strict';
+})((function() {
+  'use strict';
 
   function _typeof(obj) {
-    "@babel/helpers - typeof";
+    '@babel/helpers - typeof';
 
-    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+    return _typeof = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function(obj) {
       return typeof obj;
-    } : function (obj) {
-      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    } : function(obj) {
+      return obj && 'function' == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? 'symbol' : typeof obj;
     }, _typeof(obj);
   }
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
+      throw new TypeError('Cannot call a class as a function');
     }
   }
 
   function _defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
+    for (let i = 0; i < props.length; i++) {
+      const descriptor = props[i];
       descriptor.enumerable = descriptor.enumerable || false;
       descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
+      if ('value' in descriptor) descriptor.writable = true;
       Object.defineProperty(target, descriptor.key, descriptor);
     }
   }
@@ -37,8 +38,8 @@
   function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
-    Object.defineProperty(Constructor, "prototype", {
-      writable: false
+    Object.defineProperty(Constructor, 'prototype', {
+      writable: false,
     });
     return Constructor;
   }
@@ -49,7 +50,7 @@
         value: value,
         enumerable: true,
         configurable: true,
-        writable: true
+        writable: true,
       });
     } else {
       obj[key] = value;
@@ -59,19 +60,19 @@
   }
 
   function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function");
+    if (typeof superClass !== 'function' && superClass !== null) {
+      throw new TypeError('Super expression must either be null or a function');
     }
 
     subClass.prototype = Object.create(superClass && superClass.prototype, {
       constructor: {
         value: subClass,
         writable: true,
-        configurable: true
-      }
+        configurable: true,
+      },
     });
-    Object.defineProperty(subClass, "prototype", {
-      writable: false
+    Object.defineProperty(subClass, 'prototype', {
+      writable: false,
     });
     if (superClass) _setPrototypeOf(subClass, superClass);
   }
@@ -93,12 +94,12 @@
   }
 
   function _isNativeReflectConstruct() {
-    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+    if (typeof Reflect === 'undefined' || !Reflect.construct) return false;
     if (Reflect.construct.sham) return false;
-    if (typeof Proxy === "function") return true;
+    if (typeof Proxy === 'function') return true;
 
     try {
-      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {}));
       return true;
     } catch (e) {
       return false;
@@ -107,31 +108,31 @@
 
   function _assertThisInitialized(self) {
     if (self === void 0) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+      throw new ReferenceError('this hasn\'t been initialised - super() hasn\'t been called');
     }
 
     return self;
   }
 
   function _possibleConstructorReturn(self, call) {
-    if (call && (typeof call === "object" || typeof call === "function")) {
+    if (call && (typeof call === 'object' || typeof call === 'function')) {
       return call;
     } else if (call !== void 0) {
-      throw new TypeError("Derived constructors may only return object or undefined");
+      throw new TypeError('Derived constructors may only return object or undefined');
     }
 
     return _assertThisInitialized(self);
   }
 
   function _createSuper(Derived) {
-    var hasNativeReflectConstruct = _isNativeReflectConstruct();
+    const hasNativeReflectConstruct = _isNativeReflectConstruct();
 
     return function _createSuperInternal() {
-      var Super = _getPrototypeOf(Derived),
-          result;
+      const Super = _getPrototypeOf(Derived);
+      let result;
 
       if (hasNativeReflectConstruct) {
-        var NewTarget = _getPrototypeOf(this).constructor;
+        const NewTarget = _getPrototypeOf(this).constructor;
 
         result = Reflect.construct(Super, arguments, NewTarget);
       } else {
@@ -152,14 +153,14 @@
   }
 
   function _get() {
-    if (typeof Reflect !== "undefined" && Reflect.get) {
+    if (typeof Reflect !== 'undefined' && Reflect.get) {
       _get = Reflect.get;
     } else {
       _get = function _get(target, property, receiver) {
-        var base = _superPropBase(target, property);
+        const base = _superPropBase(target, property);
 
         if (!base) return;
-        var desc = Object.getOwnPropertyDescriptor(base, property);
+        const desc = Object.getOwnPropertyDescriptor(base, property);
 
         if (desc.get) {
           return desc.get.call(arguments.length < 3 ? target : receiver);
@@ -181,16 +182,16 @@
   }
 
   function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+    if (typeof Symbol !== 'undefined' && iter[Symbol.iterator] != null || iter['@@iterator'] != null) return Array.from(iter);
   }
 
   function _unsupportedIterableToArray(o, minLen) {
     if (!o) return;
-    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-    var n = Object.prototype.toString.call(o).slice(8, -1);
-    if (n === "Object" && o.constructor) n = o.constructor.name;
-    if (n === "Map" || n === "Set") return Array.from(o);
-    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+    if (typeof o === 'string') return _arrayLikeToArray(o, minLen);
+    let n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === 'Object' && o.constructor) n = o.constructor.name;
+    if (n === 'Map' || n === 'Set') return Array.from(o);
+    if (n === 'Arguments' || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
   }
 
   function _arrayLikeToArray(arr, len) {
@@ -202,89 +203,91 @@
   }
 
   function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    throw new TypeError('Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.');
   }
 
   function _createForOfIteratorHelper(o, allowArrayLike) {
-    var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+    let it = typeof Symbol !== 'undefined' && o[Symbol.iterator] || o['@@iterator'];
 
     if (!it) {
-      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === 'number') {
         if (it) o = it;
-        var i = 0;
+        let i = 0;
 
-        var F = function () {};
+        const F = function() {};
 
         return {
           s: F,
-          n: function () {
-            if (i >= o.length) return {
-              done: true
-            };
+          n: function() {
+            if (i >= o.length) {
+              return {
+                done: true,
+              };
+            }
             return {
               done: false,
-              value: o[i++]
+              value: o[i++],
             };
           },
-          e: function (e) {
+          e: function(e) {
             throw e;
           },
-          f: F
+          f: F,
         };
       }
 
-      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+      throw new TypeError('Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.');
     }
 
-    var normalCompletion = true,
-        didErr = false,
-        err;
+    let normalCompletion = true;
+    let didErr = false;
+    let err;
     return {
-      s: function () {
+      s: function() {
         it = it.call(o);
       },
-      n: function () {
-        var step = it.next();
+      n: function() {
+        const step = it.next();
         normalCompletion = step.done;
         return step;
       },
-      e: function (e) {
+      e: function(e) {
         didErr = true;
         err = e;
       },
-      f: function () {
+      f: function() {
         try {
           if (!normalCompletion && it.return != null) it.return();
         } finally {
           if (didErr) throw err;
         }
-      }
+      },
     };
   }
 
   /**
    * Generic functions which are not dependent on ToastE
   */
-  var Utils = /*#__PURE__*/function () {
+  const Utils = /* #__PURE__*/function() {
     function Utils() {
       _classCallCheck(this, Utils);
     }
 
     _createClass(Utils, null, [{
-      key: "bind",
+      key: 'bind',
       value:
       /**
        * Create a new function that binds the current object to the first parameter of the original
        * function
        * @param {Function} fn - The function to bind.
        * @param {any} me - the object that the function is bound to.
-       * @returns {Function} A function that is bound to the object.
+       * @return {Function} A function that is bound to the object.
        */
       function bind(fn, me) {
-        return function () {
+        return function() {
           return fn.apply(me, arguments);
         };
-      }
+      },
       /**
        * Returns true if the item is an object and not an array and not null.
        * @param {any} item - The item to check.
@@ -292,35 +295,35 @@
        */
 
     }, {
-      key: "isObject",
+      key: 'isObject',
       value: function isObject(item) {
         return item && _typeof(item) === 'object' && !Array.isArray(item) && item != null;
-      }
+      },
       /**
        * Get all the possible DOM events that can be listened to
        * @returns {string[]} An array of all the possible DOM events.
        */
 
     }, {
-      key: "_listAllPossibleDomEvents",
+      key: '_listAllPossibleDomEvents',
       get: function get() {
         // credit: https://stackoverflow.com/a/18751951
-        return _toConsumableArray(new Set([].concat(_toConsumableArray(Object.getOwnPropertyNames(document)), _toConsumableArray(Object.getOwnPropertyNames(Object.getPrototypeOf(Object.getPrototypeOf(document)))), _toConsumableArray(Object.getOwnPropertyNames(Object.getPrototypeOf(window)))).filter(function (k) {
-          return k.startsWith("on") && (document[k] == null || typeof document[k] == "function");
+        return _toConsumableArray(new Set([].concat(_toConsumableArray(Object.getOwnPropertyNames(document)), _toConsumableArray(Object.getOwnPropertyNames(Object.getPrototypeOf(Object.getPrototypeOf(document)))), _toConsumableArray(Object.getOwnPropertyNames(Object.getPrototypeOf(window)))).filter(function(k) {
+          return k.startsWith('on') && (document[k] == null || typeof document[k] == 'function');
         })));
-      }
+      },
     }, {
-      key: "getCalculatedStyle",
+      key: 'getCalculatedStyle',
       value: function getCalculatedStyle(element, cssProp) {
-        var elementStyles;
+        let elementStyles;
 
-        if (typeof cssProp !== "string" || element instanceof HTMLElement === false) {
+        if (typeof cssProp !== 'string' || element instanceof HTMLElement === false) {
           return null;
         }
 
         elementStyles = window.getComputedStyle(element);
         return elementStyles.getPropertyValue(cssProp);
-      }
+      },
       /**
        * Dispatch an event on an element.
        * @param {HTMLElement} element - The element that will be used to dispatch the event.
@@ -328,9 +331,9 @@
        */
 
     }, {
-      key: "dispatchEvent",
+      key: 'dispatchEvent',
       value: function dispatchEvent(element, eventName) {
-        var eventDispatching;
+        let eventDispatching;
         eventName = eventName.toLowerCase();
 
         if (Utils._listAllPossibleDomEvents.includes(eventName)) {
@@ -340,7 +343,7 @@
           eventDispatching = new CustomEvent(eventName);
           element.dispatchEvent(eventDispatching);
         }
-      }
+      },
       /**
        * Merges two objects properties
        * @param {Object} target The target object to receive the source values
@@ -349,25 +352,23 @@
        */
 
     }, {
-      key: "extend",
+      key: 'extend',
       value: function extend(target, source) {
         // credit: http://stackoverflow.com/questions/27936772/deep-object-merging-in-es6-es7#answer-34749873
         if (typeof Object.assign !== 'function') {
-
-          (function () {
-            Object.assign = function (target) {
-
+          (function() {
+            Object.assign = function(target) {
               if (target === undefined || target === null) {
                 throw new TypeError('Cannot convert undefined or null to object');
               }
 
-              var output = Object(target);
+              const output = Object(target);
 
-              for (var index = 1; index < arguments.length; index++) {
-                var _source = arguments[index];
+              for (let index = 1; index < arguments.length; index++) {
+                const _source = arguments[index];
 
                 if (_source !== undefined && _source !== null) {
-                  for (var nextKey in _source) {
+                  for (const nextKey in _source) {
                     if (_source.hasOwnProperty(nextKey)) {
                       output[nextKey] = _source[nextKey];
                     }
@@ -380,10 +381,10 @@
           })();
         }
 
-        var output = Object.assign({}, target);
+        const output = Object.assign({}, target);
 
         if (Utils.isObject(target) && Utils.isObject(source)) {
-          Object.keys(source).forEach(function (key) {
+          Object.keys(source).forEach(function(key) {
             if (Utils.isObject(source[key])) {
               if (!(key in target)) {
                 Object.assign(output, _defineProperty({}, key, source[key]));
@@ -397,13 +398,13 @@
         }
 
         return output;
-      }
+      },
     }]);
 
     return Utils;
   }();
 
-  var AnimationOptions = /*#__PURE__*/_createClass(function AnimationOptions() {
+  const AnimationOptions = /* #__PURE__*/_createClass(function AnimationOptions() {
     _classCallCheck(this, AnimationOptions);
 
     this.endStyle = {};
@@ -424,7 +425,7 @@
    * The Animation class is a base class for all animations.
   */
 
-  var Animation = /*#__PURE__*/function () {
+  const Animation = /* #__PURE__*/function() {
     /**
      * @param {HTMLElement} element element Animating
      */
@@ -442,65 +443,65 @@
 
 
     _createClass(Animation, [{
-      key: "style",
+      key: 'style',
       get: function get() {
         return this.target.style;
-      }
+      },
     }, {
-      key: "play",
+      key: 'play',
       value: function play() {
-        var _this$options$onAnima;
+        let _this$options$onAnima;
 
         this.reset();
         (_this$options$onAnima = this.options.onAnimationStart) === null || _this$options$onAnima === void 0 ? void 0 : _this$options$onAnima.call();
         this.resume();
-      }
+      },
     }, {
-      key: "stop",
+      key: 'stop',
       value: function stop() {
         window.clearTimeout(this._tickTimeout);
 
         this._applyClasses(this.target, this.options.endClasses);
 
         this._applyStyles(this.target, this.options.endStyle);
-      }
+      },
     }, {
-      key: "reset",
+      key: 'reset',
       value: function reset() {
         this._applyStyles(this.target, this.options.startStyle);
 
         this._applyClasses(this.target, this.options.startClasses);
-      }
+      },
     }, {
-      key: "pause",
+      key: 'pause',
       value: function pause() {
         if (this._tickTimeout) {
           window.clearTimeout(this._tickTimeout);
         }
-      }
+      },
     }, {
-      key: "resume",
+      key: 'resume',
       value: function resume() {
         this._last = +new Date();
 
         this._tick();
-      }
+      },
     }, {
-      key: "reverse",
+      key: 'reverse',
       value: function reverse() {
         this._swapStartEndElementProps();
 
         this.options.reverse = true;
         this.reset();
         this.resume();
-      }
+      },
     }, {
-      key: "_tick",
+      key: '_tick',
       value: function _tick() {
-        var _this$options$onAnima2;
+        let _this$options$onAnima2;
 
         (_this$options$onAnima2 = this.options.onAnimationTick) === null || _this$options$onAnima2 === void 0 ? void 0 : _this$options$onAnima2.call();
-      }
+      },
       /**
        * It applies the styles in the styleObj to the Element.
        * @param {HTMLElement} element - The Element to apply the styles to.
@@ -508,12 +509,12 @@
        */
 
     }, {
-      key: "_applyStyles",
+      key: '_applyStyles',
       value: function _applyStyles(element, styleObj) {
-        for (var cssPropertyName in styleObj) {
+        for (const cssPropertyName in styleObj) {
           element.style[cssPropertyName] = styleObj[cssPropertyName];
         }
-      }
+      },
       /**
        * Apply the classes in the classList to the Element.
        * @param {HTMLElement} element - The Element to apply the classes to.
@@ -521,27 +522,27 @@
        */
 
     }, {
-      key: "_applyClasses",
+      key: '_applyClasses',
       value: function _applyClasses(element, classList) {
-        for (var className in classList) {
+        for (const className in classList) {
           if (!element.classList.contains(className)) {
             element.classList.add(className);
           }
         }
-      }
+      },
     }, {
-      key: "_swapStartEndElementProps",
+      key: '_swapStartEndElementProps',
       value: function _swapStartEndElementProps() {
-        var _this$options = this.options,
-            startStyle = _this$options.startStyle,
-            endStyle = _this$options.endStyle,
-            startClasses = _this$options.startClasses,
-            endClasses = _this$options.endClasses;
+        const _this$options = this.options;
+        const startStyle = _this$options.startStyle;
+        const endStyle = _this$options.endStyle;
+        const startClasses = _this$options.startClasses;
+        const endClasses = _this$options.endClasses;
         this.options.startClasses = endClasses;
         this.options.startStyle = endStyle;
         this.options.endClasses = startClasses;
         this.options.endStyle = startStyle;
-      }
+      },
       /**
        * It takes a string like "10px" and returns an object like {value: 10, units: "px"}
        * @param {string} propValue - The value of the CSS property you want to parse.
@@ -549,13 +550,13 @@
        */
 
     }, {
-      key: "_parseCssValue",
+      key: '_parseCssValue',
       value: function _parseCssValue(propValue) {
         return {
-          value: +propValue.replace(/[^0-9.]+$/g, ""),
-          units: propValue.replace(/[0-9.]/g, "")
+          value: +propValue.replace(/[^0-9.]+$/g, ''),
+          units: propValue.replace(/[0-9.]/g, ''),
         };
-      }
+      },
     }]);
 
     return Animation;
@@ -563,10 +564,10 @@
 
   /* Creates a new instance of the Fade Animation class */
 
-  var FadeAnimation = /*#__PURE__*/function (_Animation) {
+  const FadeAnimation = /* #__PURE__*/function(_Animation) {
     _inherits(FadeAnimation, _Animation);
 
-    var _super = _createSuper(FadeAnimation);
+    const _super = _createSuper(FadeAnimation);
 
     /**
      * Creates a new instance of the Animation class
@@ -574,16 +575,16 @@
      * @param {AnimationOptions|Object} animationOptions - an object containing the options for the animation.
      */
     function FadeAnimation(element, animationOptions) {
-      var _this;
+      let _this;
 
       _classCallCheck(this, FadeAnimation);
 
       _this = _super.call(this, element);
       _this.options.startStyle = {
-        opacity: 0
+        opacity: 0,
       };
       _this.options.endStyle = {
-        opacity: 1
+        opacity: 1,
       };
       _this.options = Utils.extend(_this.options, animationOptions);
       return _this;
@@ -594,11 +595,11 @@
 
 
     _createClass(FadeAnimation, [{
-      key: "play",
+      key: 'play',
       value: function play() {
-        this.target.style.display = this.target.style.display !== "none" || ""; // if the last tick was less than 0.5s, resume
+        this.target.style.display = this.target.style.display !== 'none' || ''; // if the last tick was less than 0.5s, resume
 
-        var resume = +new Date() - (this._last || 0) < 500;
+        const resume = +new Date() - (this._last || 0) < 500;
 
         if (resume) {
           this.resume();
@@ -606,18 +607,18 @@
           this.reset();
           this.resume();
         }
-      }
+      },
       /**
        * Resume the animation
        */
 
     }, {
-      key: "resume",
+      key: 'resume',
       value: function resume() {
         this._last = +new Date();
 
         this._tick();
-      }
+      },
       /**
        * Calculate the new opacity and whether it has reached the target.
        * If the target opacity has not been reached, call the _tick function again.
@@ -625,13 +626,13 @@
        */
 
     }, {
-      key: "_tick",
+      key: '_tick',
       value: function _tick() {
-        var _this$options$onAnima;
+        let _this$options$onAnima;
 
-        var animationFinish, denominator; // Call base method
+        let animationFinish; let denominator; // Call base method
 
-        _get(_getPrototypeOf(FadeAnimation.prototype), "_tick", this).call(this); // Calculate Opacity
+        _get(_getPrototypeOf(FadeAnimation.prototype), '_tick', this).call(this); // Calculate Opacity
 
 
         denominator = this.options.startStyle.opacity > this.options.endStyle.opacity ? Math.abs(this.options.duration) * -1 : Math.abs(this.options.duration);
@@ -647,7 +648,7 @@
 
 
         animationFinish ? (_this$options$onAnima = this.options.onAnimationEnd) === null || _this$options$onAnima === void 0 ? void 0 : _this$options$onAnima.call() : this._tickTimeout = setTimeout(Utils.bind(this._tick, this), this.options.frameRate);
-      }
+      },
       /**
        * Create a new instance of the FadeAnimation class
        * @param {HTMLElement} element - The element to be animated.
@@ -656,17 +657,17 @@
        */
 
     }], [{
-      key: "fadeElement",
+      key: 'fadeElement',
       value: function fadeElement(element, animationOptions) {
         return new FadeAnimation(element, animationOptions);
-      }
+      },
     }]);
 
     return FadeAnimation;
   }(Animation);
 
   // Convert this css to JS https://jsfiddle.net/cferdinandi/qgpxvhhb/23/
-  var _transitionEnd3;
+  let _transitionEnd3;
   /**
    * Expand an HTMLElement in a particular direction
    * @param {HTMLElement} element Element to animate the expansion
@@ -677,12 +678,12 @@
 
 
   function expand(element, duration, direction) {
-    var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-    direction = direction.toUpperCase() || "UP";
-    element.setAttribute("data-direction", direction);
-    element.classList.add("expand"); // Call relevant function based on the direction passed
+    const callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    direction = direction.toUpperCase() || 'UP';
+    element.setAttribute('data-direction', direction);
+    element.classList.add('expand'); // Call relevant function based on the direction passed
 
-    if (direction === "UP" || direction === "DOWN") {
+    if (direction === 'UP' || direction === 'DOWN') {
       expandVertical(element, duration, callback);
     }
   }
@@ -696,17 +697,17 @@
 
 
   function collapse(element, duration, direction) {
-    var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    const callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
     // Set data-direction attribute for element
     direction = direction.toUpperCase();
 
-    if (!element.getAttribute("data-direction")) {
-      element.setAttribute("data-direction", direction);
+    if (!element.getAttribute('data-direction')) {
+      element.setAttribute('data-direction', direction);
     }
 
-    element.style.setProperty("--transition-duration", duration + "ms"); // Call relevant function based on the direction passed
+    element.style.setProperty('--transition-duration', duration + 'ms'); // Call relevant function based on the direction passed
 
-    if (direction === "UP" || direction === "DOWN") {
+    if (direction === 'UP' || direction === 'DOWN') {
       collapseVertical(element, duration, callback);
     }
   }
@@ -719,14 +720,14 @@
 
 
   function expandVertical(element, duration) {
-    var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    const callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     // set start props
-    element.style.height = "0px";
-    element.classList.add("is-visible"); // Set the transition end function
+    element.style.height = '0px';
+    element.classList.add('is-visible'); // Set the transition end function
 
     _transitionEnd3 = function _transitionEnd(ev) {
       // Remove the end transition to prevent extra calls on hide
-      ev.target.removeEventListener("transitionend", _transitionEnd3);
+      ev.target.removeEventListener('transitionend', _transitionEnd3);
 
       if (callback) {
         callback.call();
@@ -734,34 +735,34 @@
     }; // Register the transitionend function
 
 
-    element.addEventListener("transitionend", _transitionEnd3); // Get the end animation styles
+    element.addEventListener('transitionend', _transitionEnd3); // Get the end animation styles
 
-    var animationEndStyle = _getExpandedElementDimensions(element); // Apply the styles after timeout to trigger CSS animation
+    const animationEndStyle = _getExpandedElementDimensions(element); // Apply the styles after timeout to trigger CSS animation
 
 
     window.setTimeout(_applyAnimationEndStyles, 0, animationEndStyle);
   }
 
   function collapseVertical(element, duration) {
-    var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-    element.style.height = "0px";
+    const callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    element.style.height = '0px';
 
     _transitionEnd3 = function _transitionEnd2(ev) {
-      ev.target.removeEventListener("transitionend", _transitionEnd3);
-      ev.target.classList.remove("is-visible");
+      ev.target.removeEventListener('transitionend', _transitionEnd3);
+      ev.target.classList.remove('is-visible');
 
       if (callback) {
         callback.call();
       }
     };
 
-    element.addEventListener("transitionend", _transitionEnd3);
+    element.addEventListener('transitionend', _transitionEnd3);
   }
 
   function _applyAnimationEndStyles(target) {
-    var styleObj = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    const styleObj = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    for (var cssPropertyName in styleObj) {
+    for (const cssPropertyName in styleObj) {
       target.style[cssPropertyName] = styleObj[cssPropertyName];
     }
   }
@@ -775,16 +776,16 @@
   }
 
   function _getExpandedElementDimensions(element) {
-    var dimensions = {}; // Ensure element is shown for accurate calculations
+    const dimensions = {}; // Ensure element is shown for accurate calculations
 
-    element.style.display = "block";
+    element.style.display = 'block';
     dimensions.width = _getElementInnerWidth(element);
     dimensions.height = _getElementInnerHeight(element);
     dimensions.borderWidth = _getElementBorderWidth(element);
     dimensions.margin = _getElementMargin(element);
     dimensions.padding = _getElementPadding(element); // Reset inline display
 
-    element.style.display = "";
+    element.style.display = '';
     return dimensions;
   }
 
@@ -800,85 +801,85 @@
     return getComputedStyle(element).margin;
   }
 
-  var Options = /*#__PURE__*/_createClass(function Options() {
+  const Options = /* #__PURE__*/_createClass(function Options() {
     _classCallCheck(this, Options);
 
-    this.text = "";
-    this.heading = "";
-    this.showHideTransition = "fade";
+    this.text = '';
+    this.heading = '';
+    this.showHideTransition = 'fade';
     this.allowToastClose = true;
     this.hideAfter = 3000;
     this.loader = true;
-    this.loaderBg = "#9EC600";
+    this.loaderBg = '#9EC600';
     this.stack = 5;
-    this.position = "bottom-left";
+    this.position = 'bottom-left';
     this.bgColor = false;
     this.textColor = false;
-    this.textAlign = "left";
+    this.textAlign = 'left';
     this.icon = false;
 
-    this.beforeShow = function () {};
+    this.beforeShow = function() {};
 
-    this.afterShown = function () {};
+    this.afterShown = function() {};
 
-    this.beforeHide = function () {};
+    this.beforeHide = function() {};
 
-    this.afterHide = function () {};
+    this.afterHide = function() {};
 
-    this.onClick = function () {};
+    this.onClick = function() {};
   });
 
   /**
    * The events that can be listened for
    */
-  var ToasteEvents = {
-    onShown: "toaste.on.shown",
-    onHidden: "toaste.on.hidden",
-    onHide: "toaste.on.hide",
-    onShow: "toaste.on.show"
+  const ToasteEvents = {
+    onShown: 'toaste.on.shown',
+    onHidden: 'toaste.on.hidden',
+    onHide: 'toaste.on.hide',
+    onShow: 'toaste.on.show',
   };
   /**
    * The built in positional classes
    */
 
-  var PositionClasses = ["bottom-left", "bottom-right", "top-right", "top-left", "bottom-center", "top-center", "mid-center"];
+  const PositionClasses = ['bottom-left', 'bottom-right', 'top-right', 'top-left', 'bottom-center', 'top-center', 'mid-center'];
   /**
    * The built in icons
    */
 
-  var DefaultIcons = ["success", "error", "info", "warning"];
+  const DefaultIcons = ['success', 'error', 'info', 'warning'];
 
-  var ExpandAnimation = /*#__PURE__*/function (_Animation) {
+  const ExpandAnimation = /* #__PURE__*/function(_Animation) {
     _inherits(ExpandAnimation, _Animation);
 
-    var _super = _createSuper(ExpandAnimation);
+    const _super = _createSuper(ExpandAnimation);
 
     function ExpandAnimation(element, objProps) {
-      var _this;
+      let _this;
 
       _classCallCheck(this, ExpandAnimation);
 
-      var elHeight;
+      let elHeight;
       _this = _super.call(this, element);
       _this.options.startStyle = {
-        height: '0px'
+        height: '0px',
       }; // ensure visible
 
-      element.style.display = "";
-      elHeight = Utils.getCalculatedStyle(element, "height");
+      element.style.display = '';
+      elHeight = Utils.getCalculatedStyle(element, 'height');
       _this.options.endStyle = {
-        height: _this._parseCssValue(elHeight).value.toString()
+        height: _this._parseCssValue(elHeight).value.toString(),
       };
       _this.options = Utils.extend(objProps || {}, _this.options);
       return _this;
     }
 
     _createClass(ExpandAnimation, [{
-      key: "play",
+      key: 'play',
       value: function play() {
-        this.target.style.display = this.target.style.display !== "none" || ""; // if the last tick was less than 0.5s, resume
+        this.target.style.display = this.target.style.display !== 'none' || ''; // if the last tick was less than 0.5s, resume
 
-        var resume = +new Date() - (this._last || 0) < 500;
+        const resume = +new Date() - (this._last || 0) < 500;
 
         if (resume) {
           this.resume();
@@ -886,15 +887,15 @@
           this.reset();
           this.resume();
         }
-      }
+      },
     }, {
-      key: "_tick",
+      key: '_tick',
       value: function _tick() {
-        var _this$options$onAnima;
+        let _this$options$onAnima;
 
-        var denominator, animationFinish, calculatedHeight, currentHeight, startHeight, endHeight;
+        let denominator; let animationFinish; let calculatedHeight; let currentHeight; let startHeight; let endHeight;
 
-        _get(_getPrototypeOf(ExpandAnimation.prototype), "_tick", this).call(this);
+        _get(_getPrototypeOf(ExpandAnimation.prototype), '_tick', this).call(this);
 
         startHeight = this._parseCssValue(this.options.startStyle.height);
         endHeight = this._parseCssValue(this.options.endStyle.height);
@@ -923,7 +924,7 @@
 
 
         animationFinish ? (_this$options$onAnima = this.options.onAnimationEnd) === null || _this$options$onAnima === void 0 ? void 0 : _this$options$onAnima.call() : this._tickTimeout = setTimeout(Utils.bind(this._tick, this), this.options.frameRate);
-      }
+      },
       /**
        * It creates an ExpandAnimation object.
        * @param element - The element to animate.
@@ -932,10 +933,10 @@
        */
 
     }], [{
-      key: "expandElement",
+      key: 'expandElement',
       value: function expandElement(element, animationProps) {
         return new ExpandAnimation(element, animationProps);
-      }
+      },
     }]);
 
     return ExpandAnimation;
@@ -943,28 +944,28 @@
 
   /**
    * ToastE Notifier core class responsible for core functionality
-   * 
+   *
    * @module Core
    * @private
    */
 
-  var Core = /*#__PURE__*/function () {
+  const Core = /* #__PURE__*/function() {
     function Core() {
       _classCallCheck(this, Core);
     }
 
     _createClass(Core, [{
-      key: "init",
+      key: 'init',
       value:
       /**
        * The initializer method for the ToastE notification library
        * @param {string | string[] | Options()} [opts=Options] The Options object or the toast notification text
        */
       function init() {
-        var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Options();
+        const opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Options();
         this.prepareOptions(opts, new Options());
         this.process();
-      }
+      },
       /**
        * Prepares the Options for the Toast Notification before handling any functionality
        * @param {Options | string | string[]} options The new Options object or toast notifications desired text
@@ -972,11 +973,11 @@
        */
 
     }, {
-      key: "prepareOptions",
+      key: 'prepareOptions',
       value: function prepareOptions(options, optionsToExtend) {
-        var _options = {};
+        let _options = {};
 
-        if (typeof options === "string" || options instanceof Array) {
+        if (typeof options === 'string' || options instanceof Array) {
           _options.text = options;
         } else {
           _options = options;
@@ -984,49 +985,49 @@
 
 
         this.options = Utils.extend(optionsToExtend, _options);
-      }
+      },
       /**
        * Processes the toast notification
        */
 
     }, {
-      key: "process",
+      key: 'process',
       value: function process() {
         this.setup();
         this.addToDom();
         this.position();
         this.bindToast();
         this.animate();
-      }
+      },
       /**
        * Setup ToastE element
        */
 
     }, {
-      key: "setup",
+      key: 'setup',
       value: function setup() {
-        var _defaultToastContent = document.createElement("div");
+        const _defaultToastContent = document.createElement('div');
 
-        _defaultToastContent.className = "toaste-single";
+        _defaultToastContent.className = 'toaste-single';
         this._toastEl = this._toastEl || _defaultToastContent; // The Loader
 
-        var toastLoader = document.createElement("span");
-        toastLoader.className = "toaste-loader";
+        const toastLoader = document.createElement('span');
+        toastLoader.className = 'toaste-loader';
 
         this._toastEl.appendChild(toastLoader); // Insert Close Icon
 
 
         if (this.options.allowToastClose) {
-          var toastCloseIcon = document.createElement("span");
-          toastCloseIcon.className = "toaste-close";
+          const toastCloseIcon = document.createElement('span');
+          toastCloseIcon.className = 'toaste-close';
 
           this._toastEl.appendChild(toastCloseIcon);
         } // Insert Header
 
 
         if (this.options.heading) {
-          var toastHeader = document.createElement("h2");
-          toastHeader.className = "toaste-heading";
+          const toastHeader = document.createElement('h2');
+          toastHeader.className = 'toaste-heading';
           toastHeader.innerText = this.options.heading;
 
           this._toastEl.appendChild(toastHeader);
@@ -1036,43 +1037,43 @@
         this.generateToastText(); // Update the Toast styles
 
         this.setToastElementStyles();
-      }
+      },
       /**
        * Generates and appends the text element(s) to the toast notification
        */
 
     }, {
-      key: "generateToastText",
+      key: 'generateToastText',
       value: function generateToastText() {
         // if array: create an unordered list element of text
         // else: create span element of text
         if (this.options.text instanceof Array) {
-          var toastLines = document.createElement("ul");
-          toastLines.className = "toaste-ul";
+          const toastLines = document.createElement('ul');
+          toastLines.className = 'toaste-ul';
 
-          for (var i = 0; i < this.options.text.length; i++) {
-            var textElement = document.createElement("li");
-            textElement.className = "toaste-li";
-            textElement.id = "toaste-item-".concat(i);
+          for (let i = 0; i < this.options.text.length; i++) {
+            const textElement = document.createElement('li');
+            textElement.className = 'toaste-li';
+            textElement.id = 'toaste-item-'.concat(i);
             textElement.innerText = this.options.text[i];
             toastLines.appendChild(textElement);
           }
 
           this._toastEl.appendChild(toastLines);
         } else {
-          var _textElement = document.createElement("span");
+          const _textElement = document.createElement('span');
 
           _textElement.innerText = this.options.text;
 
           this._toastEl.appendChild(_textElement);
         }
-      }
+      },
       /**
        * Sets the Toast Notification element styles
        */
 
     }, {
-      key: "setToastElementStyles",
+      key: 'setToastElementStyles',
       value: function setToastElementStyles() {
         // Set BG Colour
         if (this.options.bgColor !== false) {
@@ -1091,10 +1092,10 @@
 
 
         if (this.options.icon) {
-          this._toastEl.classList.add("toaste-has-icon");
+          this._toastEl.classList.add('toaste-has-icon');
 
           if (this.options.icon && DefaultIcons.includes(this.options.icon)) {
-            this._toastEl.classList.add("toaste-icon-".concat(this.options.icon));
+            this._toastEl.classList.add('toaste-icon-'.concat(this.options.icon));
           }
         } // Add custom class
 
@@ -1102,32 +1103,32 @@
         if (this.options.class) {
           this._toastEl.classList.add(this.options.class);
         }
-      }
+      },
       /**
        * Set the position of the toast notification
        */
 
     }, {
-      key: "position",
+      key: 'position',
       value: function position() {
-        if (typeof this.options.position === "string" && PositionClasses.indexOf(this.options.position) > -1) {
-          var containerRect = this._container.getBoundingClientRect(); // Set the position class or calculate for central values
+        if (typeof this.options.position === 'string' && PositionClasses.indexOf(this.options.position) > -1) {
+          const containerRect = this._container.getBoundingClientRect(); // Set the position class or calculate for central values
 
 
           switch (this.options.position) {
-            case "bottom-center":
-              this._container.style.left = "".concat(window.outerWidth / 2 - containerRect.width / 2, "px");
-              this._container.style.bottom = "20px";
+            case 'bottom-center':
+              this._container.style.left = ''.concat(window.outerWidth / 2 - containerRect.width / 2, 'px');
+              this._container.style.bottom = '20px';
               break;
 
-            case "top-center":
-              this._container.style.left = "".concat(window.outerWidth / 2 - containerRect.width / 2, "px");
-              this._container.style.top = "20px";
+            case 'top-center':
+              this._container.style.left = ''.concat(window.outerWidth / 2 - containerRect.width / 2, 'px');
+              this._container.style.top = '20px';
               break;
 
-            case "mid-center":
-              this._container.style.left = "".concat(window.outerWidth / 2 - containerRect.width / 2, "px");
-              this._container.style.bottom = "".concat(window.outerHeight / 2 - containerRect.height / 2, "px");
+            case 'mid-center':
+              this._container.style.left = ''.concat(window.outerWidth / 2 - containerRect.width / 2, 'px');
+              this._container.style.bottom = ''.concat(window.outerHeight / 2 - containerRect.height / 2, 'px');
               break;
 
             default:
@@ -1135,89 +1136,89 @@
 
               break;
           }
-        } else if (_typeof(this.options.position) === "object") {
+        } else if (_typeof(this.options.position) === 'object') {
           // Set defaults to 'auto'
-          this._container.style.top = "auto";
-          this._container.style.right = "auto";
-          this._container.style.bottom = "auto";
-          this._container.style.left = "auto"; // Each property will be set according to the options.position attributes 
+          this._container.style.top = 'auto';
+          this._container.style.right = 'auto';
+          this._container.style.bottom = 'auto';
+          this._container.style.left = 'auto'; // Each property will be set according to the options.position attributes
 
-          for (var position in this.options.position) {
+          for (const position in this.options.position) {
             if (isNaN(Number.parseFloat(this.options.position[position]))) {
               this._container.style.setProperty(position, this.options.position[position]);
             } else {
-              this._container.style.setProperty(position, this.options.position[position] + "px");
+              this._container.style.setProperty(position, this.options.position[position] + 'px');
             }
           }
         } else {
           // Default to bottom-left
-          this._container.classList.add("bottom-left");
+          this._container.classList.add('bottom-left');
         }
-      }
+      },
       /**
-       * Binds the events passed in the {@link Options} object to 
+       * Binds the events passed in the {@link Options} object to
        */
 
     }, {
-      key: "bindToast",
+      key: 'bindToast',
       value: function bindToast() {
-        var that = this; // Register the event handler to hide/remove the loader
+        const that = this; // Register the event handler to hide/remove the loader
 
-        this._toastEl.addEventListener(ToasteEvents.onShown, function () {
+        this._toastEl.addEventListener(ToasteEvents.onShown, function() {
           that.processLoader();
         }); // Attach the close event for the close button
 
 
-        this._toastEl.querySelector("span.toaste-close").addEventListener("click", that.closeToast.bind(that, that)); // Register the available event handlers passed in through options
+        this._toastEl.querySelector('span.toaste-close').addEventListener('click', that.closeToast.bind(that, that)); // Register the available event handlers passed in through options
 
 
-        if (typeof this.options.beforeShow === "function") {
+        if (typeof this.options.beforeShow === 'function') {
           this._toastEl.addEventListener(ToasteEvents.onShow, that.options.beforeShow(that._toastEl));
         }
 
-        if (typeof this.options.afterShown === "function") {
+        if (typeof this.options.afterShown === 'function') {
           this._toastEl.addEventListener(ToasteEvents.onShown, that.options.afterShown(that._toastEl));
         }
 
-        if (typeof this.options.beforeHide === "function") {
+        if (typeof this.options.beforeHide === 'function') {
           this._toastEl.addEventListener(ToasteEvents.onHide, that.options.beforeHide(that._toastEl));
         }
 
-        if (typeof this.options.afterHidden === "function") {
+        if (typeof this.options.afterHidden === 'function') {
           this._toastEl.addEventListener(ToasteEvents.onHidden, that.options.afterHidden(that._toastEl));
         }
 
-        if (typeof this.options.onClick === "function") {
-          this._toastEl.addEventListener("click", that.options.onClick(that._toastEl));
+        if (typeof this.options.onClick === 'function') {
+          this._toastEl.addEventListener('click', that.options.onClick(that._toastEl));
         }
-      }
+      },
     }, {
-      key: "addToDom",
+      key: 'addToDom',
       value: function addToDom() {
-        var _container = document.querySelector(".toaste-wrap");
+        let _container = document.querySelector('.toaste-wrap');
 
-        var toastsRemoving;
+        let toastsRemoving;
 
         if (!_container) {
-          _container = document.createElement("div");
-          _container.className = "toaste-wrap";
+          _container = document.createElement('div');
+          _container.className = 'toaste-wrap';
 
-          _container.setAttribute("role", "alert");
+          _container.setAttribute('role', 'alert');
 
-          _container.setAttribute("aria-live", "polite");
+          _container.setAttribute('aria-live', 'polite');
 
           document.body.appendChild(_container);
         } else if (!this.options.stack || isNaN(parseInt(this.options.stack, 10))) {
           // remove all child elements from container
-          for (var ele in _container.children) {
+          for (const ele in _container.children) {
             _container.removeChild(ele);
           }
         }
 
-        toastsRemoving = _container.querySelectorAll(".toaste-single[hidden]");
+        toastsRemoving = _container.querySelectorAll('.toaste-single[hidden]');
 
         if (toastsRemoving) {
-          toastsRemoving.forEach(function (toast) {
+          toastsRemoving.forEach(function(toast) {
             _container.removeChild(toast);
           });
         }
@@ -1227,19 +1228,19 @@
 
 
         if (this.options.stack && !isNaN(parseInt(this.options.stack), 10)) {
-          var previousToastCount = _container.querySelectorAll(".toaste-single").length;
+          const previousToastCount = _container.querySelectorAll('.toaste-single').length;
 
-          var extraToastCount = previousToastCount - this.options.stack; // Remove oldest toasts that overflow
+          const extraToastCount = previousToastCount - this.options.stack; // Remove oldest toasts that overflow
 
           if (extraToastCount > 0) {
-            toastsRemoving = Array.from(_container.querySelectorAll(".toaste-single").values()).slice(0, extraToastCount);
+            toastsRemoving = Array.from(_container.querySelectorAll('.toaste-single').values()).slice(0, extraToastCount);
 
-            var _iterator = _createForOfIteratorHelper(toastsRemoving),
-                _step;
+            const _iterator = _createForOfIteratorHelper(toastsRemoving);
+            let _step;
 
             try {
               for (_iterator.s(); !(_step = _iterator.n()).done;) {
-                var toast = _step.value;
+                const toast = _step.value;
 
                 _container.removeChild(toast);
               }
@@ -1252,44 +1253,44 @@
         }
 
         this._container = _container;
-      }
+      },
     }, {
-      key: "canAutoHide",
+      key: 'canAutoHide',
       value: function canAutoHide() {
         return this.options.hideAfter !== false && !isNaN(parseInt(this.options.hideAfter, 10));
-      }
+      },
     }, {
-      key: "processLoader",
+      key: 'processLoader',
       value: function processLoader() {
         // Show the loader only, if auto-hide is on and loader is demanded
         if (!this.canAutoHide() || this.options.loader === false) {
           return false;
         }
 
-        var loader = this._toastEl.querySelector(".toaste-loader"); // 400 is the default time
+        const loader = this._toastEl.querySelector('.toaste-loader'); // 400 is the default time
         // Divide by 1000 for milliseconds to seconds
 
 
-        var transitionTime = (this.options.hideAfter - 400) / 1000 + "s";
-        var loaderBg = this.options.loaderBg || '';
-        loader.style.setProperty("--toaste-transition-duration", transitionTime);
+        const transitionTime = (this.options.hideAfter - 400) / 1000 + 's';
+        const loaderBg = this.options.loaderBg || '';
+        loader.style.setProperty('--toaste-transition-duration', transitionTime);
 
         if (loaderBg) {
-          loader.style.setProperty("--toaste-loader-bg", this.options.loaderBg);
+          loader.style.setProperty('--toaste-loader-bg', this.options.loaderBg);
         }
 
-        loader.classList.add("toaste-loaded");
-      }
+        loader.classList.add('toaste-loaded');
+      },
     }, {
-      key: "animate",
+      key: 'animate',
       value: function animate() {
-        var that = this;
+        const that = this;
 
-        var afterShown = function afterShown() {
+        const afterShown = function afterShown() {
           Utils.dispatchEvent(that._toastEl, ToasteEvents.onShown);
         };
 
-        var optionsAnimation = new AnimationOptions();
+        const optionsAnimation = new AnimationOptions();
         optionsAnimation.onAnimationEnd = afterShown;
         this._toastEl.style.display = 'none';
         Utils.dispatchEvent(that._toastEl, ToasteEvents.onShow);
@@ -1297,7 +1298,7 @@
         if (this.options.showHideTransition.toLowerCase() === 'fade') {
           FadeAnimation.fadeElement(this._toastEl, optionsAnimation).play();
         } else if (this.options.showHideTransition.toLowerCase() === 'slide') {
-          expand(this._toastEl, 400, "UP", afterShown);
+          expand(this._toastEl, 400, 'UP', afterShown);
         } else {
           ExpandAnimation.expandElement(this._toastEl, optionsAnimation).play();
         }
@@ -1305,14 +1306,14 @@
         if (this.canAutoHide()) {
           this.autoCloseTimeout = window.setTimeout(this.closeToast.bind(this, that), +this.options.hideAfter);
         }
-      }
+      },
     }, {
-      key: "reset",
+      key: 'reset',
       value: function reset() {
-        var all = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+        const all = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
         if (all) {
-          document.querySelectorAll('.toaste-wrap').forEach(function (el) {
+          document.querySelectorAll('.toaste-wrap').forEach(function(el) {
             el.remove();
           });
         } else {
@@ -1320,14 +1321,14 @@
 
           this._toastEl = null;
         }
-      }
+      },
     }, {
-      key: "update",
+      key: 'update',
       value: function update(optionsUpdated) {
         this.prepareOptions(optionsUpdated, this.options);
         this.setup();
         this.bindToast();
-      }
+      },
       /**
        * Closes the specified ToastE element
        * @param {Core} toastEInstance The ToastE object instance to close
@@ -1335,16 +1336,16 @@
        */
 
     }, {
-      key: "closeToast",
+      key: 'closeToast',
       value: function closeToast(toastEInstance, event) {
-        var animationOptions;
+        let animationOptions;
 
         if (event) {
           event.preventDefault();
         }
 
-        var animationEnd = function animationEnd() {
-          toastEInstance._toastEl.style.display = "none";
+        const animationEnd = function animationEnd() {
+          toastEInstance._toastEl.style.display = 'none';
           Utils.dispatchEvent(toastEInstance._toastEl, ToasteEvents.onHidden);
 
           if (toastEInstance.autoCloseTimeout) {
@@ -1355,22 +1356,22 @@
         animationOptions = new AnimationOptions();
         animationOptions.onAnimationEnd = animationEnd;
         animationOptions.startStyle = {
-          opacity: toastEInstance._toastEl.style.opacity
+          opacity: toastEInstance._toastEl.style.opacity,
         };
         animationOptions.endStyle = {
-          opacity: 0
+          opacity: 0,
         }; // Dispatch event to trigger any event listeners
 
         Utils.dispatchEvent(toastEInstance._toastEl, ToasteEvents.onHide);
 
-        if (toastEInstance.options.showHideTransition === "fade") {
+        if (toastEInstance.options.showHideTransition === 'fade') {
           FadeAnimation.fadeElement(toastEInstance._toastEl, animationOptions).play();
-        } else if (toastEInstance.options.showHideTransition === "slide") {
-          collapse(toastEInstance._toastEl, 400, "DOWN", animationEnd);
+        } else if (toastEInstance.options.showHideTransition === 'slide') {
+          collapse(toastEInstance._toastEl, 400, 'DOWN', animationEnd);
         } else {
-          collapse(toastEInstance._toastEl, 400, "LEFT", animationEnd);
+          collapse(toastEInstance._toastEl, 400, 'LEFT', animationEnd);
         }
-      }
+      },
     }]);
 
     return Core;
@@ -1378,11 +1379,11 @@
 
   /**
    * Wrapper module to expose public functionality
-   * 
+   *
    * @module ToastE-Notifier
    */
 
-  var ToastENotifier = /*#__PURE__*/function () {
+  const ToastENotifier = /* #__PURE__*/function() {
     /**
      * Creates and displays a ToastE Notification
      * @param {Options} options The ToastE notification options
@@ -1400,29 +1401,29 @@
 
 
     _createClass(ToastENotifier, [{
-      key: "reset",
+      key: 'reset',
       value: function reset(option) {
         this.toastE.reset(option);
-      }
+      },
       /**
        * Update a ToastE notification's attributes
        * @param {Options} newOptions The new options for the ToastE Notification
        */
 
     }, {
-      key: "update",
+      key: 'update',
       value: function update(newOptions) {
         this.toastE.update(newOptions);
-      }
+      },
       /**
        * Close a ToastE notification
        */
 
     }, {
-      key: "close",
+      key: 'close',
       value: function close() {
         this.toastE.close();
-      }
+      },
     }]);
 
     return ToastENotifier;
@@ -1433,5 +1434,4 @@
   }
 
   output.exports = ToastENotifier;
-
 }));
