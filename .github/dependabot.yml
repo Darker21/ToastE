@@ -12,6 +12,6 @@ updates:
     reviewers: 
       - "Darker21"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     allow:
       - dependancy-type: "development"
