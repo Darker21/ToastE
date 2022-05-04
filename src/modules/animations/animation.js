@@ -18,7 +18,7 @@ export default class Animation {
   /**
      * @return {CSSStyleDeclaration} current styles on `this.target`
      */
-  get style() {
+  get currentStyle() {
     return this.target.style;
   }
 
@@ -57,6 +57,12 @@ export default class Animation {
     this.options.reverse = true;
     this.reset();
     this.resume();
+  }
+
+  _end() {
+    this._applyStyles(this.target, this.options.endStyle);
+    this._applyClasses(this.target, this.options.endClasses);
+    this.options.onAnimationEnd?.call();
   }
 
   _tick() {

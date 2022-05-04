@@ -9,16 +9,24 @@ export default class ExpandAnimation extends Animation {
 
     this.options.startStyle = {
       height: '0px',
+      padding: '0px',
     };
 
     // ensure visible
     element.style.display = '';
     const elHeight = Utils.getCalculatedStyle(element, 'height');
+    const elPadding = Utils.getCalculatedStyle(element, 'padding');
     this.options.endStyle = {
-      height: this._parseCssValue(elHeight).value.toString(),
+      height: elHeight,
+      padding: elPadding,
     };
 
     this.options = Utils.extend(objProps || {}, this.options);
+
+    this._startHeight = this._parseCssValue(this.options.startStyle.height);
+    this._startPadding = this._parseCssValue(this.options.startStyle.padding);
+    this._endHeight = this._parseCssValue(this.options.endStyle.height);
+    this._endPadding = this._parseCssValue(this.options.endStyle.padding);
   }
 
   play() {
@@ -39,45 +47,50 @@ export default class ExpandAnimation extends Animation {
 
     super._tick();
 
-    const startHeight = this._parseCssValue(this.options.startStyle.height);
-    const endHeight = this._parseCssValue(this.options.endStyle.height);
-    console.log(startHeight, endHeight);
-
     // Get units being used (Most likely px)
-    const currentHeight = this._parseCssValue(this.style.height);
+    const currentHeight = this._parseCssValue(this.currentStyle.height);
+    const currentPadding = this._parseCssValue(this.currentStyle.padding);
 
     // Calculate height
-    // TODO  this is calculating a value WAY too small -
-    // needs to default if value is too small (maybe 0.25px increment)
-    const denominator =
-      startHeight.value > endHeight.value ?
+    const heightDenominator =
+      this._startHeight.value > this._endHeight.value ?
         Math.abs(this.options.duration) * -1 :
         Math.abs(this.options.duration);
+
     const calculatedHeight = ((currentHeight.value || 1) *
-      ((new Date() - this._last) / denominator));
-    if (Math.abs(currentHeight.value - Math.abs(calculatedHeight)) < 1e-3) {
-      this._tickTimeout = setTimeout(
-          Utils.bind(this._tick, this),
-          this.options.frameRate);
-      return;
-    };
-    console.log(calculatedHeight, this.style.height);
-    this.style.height = calculatedHeight + currentHeight.units;
+      ((new Date() - this._last) / heightDenominator));
+
+    this.currentStyle.height = (currentHeight.value + calculatedHeight) +
+        currentHeight.units;
+
+    const paddingDenominator =
+      this._startPadding.value > this._endPadding.value ?
+        Math.abs(this.options.duration) * -1 :
+        Math.abs(this.options.duration);
+
+    const calculatedPadding = ((currentPadding.value || 1) *
+      ((new Date() - this._last)/paddingDenominator));
+
+    this.currentStyle.padding = (currentPadding.value + calculatedPadding) +
+      currentPadding.units;
+    console.log(this.currentStyle.padding);
 
     // Update _last to now
     this._last = +new Date();
 
     // Calculate new height and whether it has reached the target
-    if (startHeight.value > endHeight.value) {
+    if (this._startHeight.value > this._endHeight.value) {
       animationFinish =
-        +this._parseCssValue(this.style.height).value <= endHeight.value;
+        +this._parseCssValue(this.currentStyle.height).value <=
+        this._endHeight.value;
     } else {
       animationFinish =
-        +this._parseCssValue(this.style.height).value >= endHeight.value;
+        +this._parseCssValue(this.currentStyle.height).value >=
+        this._endHeight.value;
     }
 
     // Check if the target opacity has been met
-    animationFinish ? this.options.onAnimationEnd?.call() :
+    animationFinish ? this._end() :
     this._tickTimeout = setTimeout(
         Utils.bind(this._tick, this),
         this.options.frameRate);
