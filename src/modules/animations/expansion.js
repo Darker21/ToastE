@@ -57,10 +57,14 @@ export default class ExpandAnimation extends Animation {
         Math.abs(this.options.duration) * -1 :
         Math.abs(this.options.duration);
 
-    const calculatedHeight = ((currentHeight.value || 1) *
-      ((new Date() - this._last) / heightDenominator));
+    const now = new Date();
 
-    this.currentStyle.height = (currentHeight.value + calculatedHeight) +
+    const calculatedHeight = ((currentHeight.value || 1) *
+      ((now - this._last) / heightDenominator));
+
+
+    this.currentStyle.height = Math.min(this._endHeight.value,
+        (currentHeight.value + calculatedHeight)) +
         currentHeight.units;
 
     const paddingDenominator =
@@ -68,12 +72,16 @@ export default class ExpandAnimation extends Animation {
         Math.abs(this.options.duration) * -1 :
         Math.abs(this.options.duration);
 
-    const calculatedPadding = ((currentPadding.value || 1) *
-      ((new Date() - this._last)/paddingDenominator));
+    const calculatedPadding = ((currentPadding.value || 0.1) *
+      ((now - this._last)/paddingDenominator));
 
-    this.currentStyle.padding = (currentPadding.value + calculatedPadding) +
+    this.currentStyle.padding = Math.min(this._endPadding.value,
+        (currentPadding.value + calculatedPadding)) +
       currentPadding.units;
-    console.log(this.currentStyle.padding);
+    // console.log(this.currentStyle.padding);
+
+    // this._calculatePropValue('height');
+    // this._calculatePropValue('padding');
 
     // Update _last to now
     this._last = +new Date();

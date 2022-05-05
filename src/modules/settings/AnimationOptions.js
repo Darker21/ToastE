@@ -1,3 +1,5 @@
+import { EasingMode } from '../lib/Constants';
+
 export default class AnimationOptions {
   constructor() {
     this.endStyle = {};
@@ -5,6 +7,7 @@ export default class AnimationOptions {
     this.currentStyle = {};
     this.duration = 400;
     this.frameRate = 16;
+    this.easingMode = EasingMode.LINEAR,
     this.classes = {};
     this.currentClasses = [];
     this.endClasses = [];

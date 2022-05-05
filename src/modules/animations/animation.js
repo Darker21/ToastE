@@ -67,6 +67,7 @@ export default class Animation {
 
   _tick() {
     this.options.onAnimationTick?.call();
+    console.log(this.currentStyle.height);
   }
 
   /**
@@ -102,6 +103,18 @@ export default class Animation {
     this.options.startStyle = endStyle;
     this.options.endClasses = startClasses;
     this.options.endStyle = startStyle;
+  }
+
+  _calculatePropValue(cssPropertyName) {
+    const currentProp = this._parseCssValue(this.currentStyle[cssPropertyName]);
+
+    const denominator =
+      this.options.startStyle[cssPropertyName].value >
+      this.options.endStyle[cssPropertyName].value ?
+        Math.abs(this.options.duration) * -1 :
+        Math.abs(this.options.duration);
+    this.target.style[cssPropertyName] =
+    (currentProp.value + (new Date() - this._last) / denominator) + currentProp.units;
   }
 
   /**

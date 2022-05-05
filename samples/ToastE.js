@@ -410,6 +410,30 @@
     return Utils;
   }();
 
+  /**
+   * The events that can be listened for
+   */
+  var ToasteEvents = {
+    onShown: 'toaste.on.shown',
+    onHidden: 'toaste.on.hidden',
+    onHide: 'toaste.on.hide',
+    onShow: 'toaste.on.show'
+  };
+  /**
+   * The built in positional classes
+   */
+
+  var PositionClasses = ['bottom-left', 'bottom-right', 'top-right', 'top-left', 'bottom-center', 'top-center', 'mid-center'];
+  /**
+   * The built in icons
+   */
+
+  var DefaultIcons = ['success', 'error', 'info', 'warning'];
+  var EasingMode = {
+    'LINEAR': 'LINEAR',
+    'EASE_IN': 'EASE_IN'
+  };
+
   var AnimationOptions = /*#__PURE__*/_createClass(function AnimationOptions() {
     _classCallCheck(this, AnimationOptions);
 
@@ -418,7 +442,7 @@
     this.currentStyle = {};
     this.duration = 400;
     this.frameRate = 16;
-    this.classes = {};
+    this.easingMode = EasingMode.LINEAR, this.classes = {};
     this.currentClasses = [];
     this.endClasses = [];
     this.startClasses = [];
@@ -518,6 +542,7 @@
         var _this$options$onAnima3;
 
         (_this$options$onAnima3 = this.options.onAnimationTick) === null || _this$options$onAnima3 === void 0 ? void 0 : _this$options$onAnima3.call();
+        console.log(this.currentStyle.height);
       }
       /**
          * It applies the styles in the styleObj to the Element.
@@ -562,6 +587,14 @@
         this.options.startStyle = endStyle;
         this.options.endClasses = startClasses;
         this.options.endStyle = startStyle;
+      }
+    }, {
+      key: "_calculatePropValue",
+      value: function _calculatePropValue(cssPropertyName) {
+        var currentProp = this._parseCssValue(this.currentStyle[cssPropertyName]);
+
+        var denominator = this.options.startStyle[cssPropertyName].value > this.options.endStyle[cssPropertyName].value ? Math.abs(this.options.duration) * -1 : Math.abs(this.options.duration);
+        this.target.style[cssPropertyName] = currentProp.value + (new Date() - this._last) / denominator + currentProp.units;
       }
       /**
          * It takes a string like "10px" and
@@ -885,26 +918,6 @@
     this.onClick = function () {};
   });
 
-  /**
-   * The events that can be listened for
-   */
-  var ToasteEvents = {
-    onShown: 'toaste.on.shown',
-    onHidden: 'toaste.on.hidden',
-    onHide: 'toaste.on.hide',
-    onShow: 'toaste.on.show'
-  };
-  /**
-   * The built in positional classes
-   */
-
-  var PositionClasses = ['bottom-left', 'bottom-right', 'top-right', 'top-left', 'bottom-center', 'top-center', 'mid-center'];
-  /**
-   * The built in icons
-   */
-
-  var DefaultIcons = ['success', 'error', 'info', 'warning'];
-
   var ExpandAnimation = /*#__PURE__*/function (_Animation) {
     _inherits(ExpandAnimation, _Animation);
 
@@ -964,12 +977,15 @@
 
 
         var heightDenominator = this._startHeight.value > this._endHeight.value ? Math.abs(this.options.duration) * -1 : Math.abs(this.options.duration);
-        var calculatedHeight = (currentHeight.value || 1) * ((new Date() - this._last) / heightDenominator);
-        this.currentStyle.height = currentHeight.value + calculatedHeight + currentHeight.units;
+        var now = new Date();
+        var calculatedHeight = (currentHeight.value || 1) * ((now - this._last) / heightDenominator);
+        this.currentStyle.height = Math.min(this._endHeight.value, currentHeight.value + calculatedHeight) + currentHeight.units;
         var paddingDenominator = this._startPadding.value > this._endPadding.value ? Math.abs(this.options.duration) * -1 : Math.abs(this.options.duration);
-        var calculatedPadding = (currentPadding.value || 1) * ((new Date() - this._last) / paddingDenominator);
-        this.currentStyle.padding = currentPadding.value + calculatedPadding + currentPadding.units;
-        console.log(this.currentStyle.padding); // Update _last to now
+        var calculatedPadding = (currentPadding.value || 0.1) * ((now - this._last) / paddingDenominator);
+        this.currentStyle.padding = Math.min(this._endPadding.value, currentPadding.value + calculatedPadding) + currentPadding.units; // console.log(this.currentStyle.padding);
+        // this._calculatePropValue('height');
+        // this._calculatePropValue('padding');
+        // Update _last to now
 
         this._last = +new Date(); // Calculate new height and whether it has reached the target
 

@@ -30,3 +30,8 @@ export const DefaultIcons = [
   'info',
   'warning',
 ];
+
+export const EasingMode = {
+  'LINEAR': 'LINEAR',
+  'EASE_IN': 'EASE_IN',
+};

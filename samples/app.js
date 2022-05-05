@@ -34,14 +34,16 @@ window.NotificationApp.Constructor = NotificationApp;
 
 window.onload = function() {
     document.getElementById("btnNew").onclick = () => {
-        new window.ToastENotifier({
-            text: "hi",
-            loaderBgColor: "#Bada55",
-            showHideTransition: "expand",
-            beforeShow: (el) => {
-                console.log(el);
-                el.style.display = "";
-            },
-        });
+        window.NotificationApp.send("hi", ["hi", "hi", "hi", "hi", "hi"], 'bottom-right', "#BADA55", false, 3000, 1, "expand");
+        // new window.ToastENotifier({
+        //     text: ["hi", "hi", "hi", "hi"],
+        //     loaderBgColor: "#Bada55",
+        //     hideAfter: 300,
+        //     showHideTransition: "expand",
+        //     beforeShow: (el) => {
+        //         console.log(el);
+        //         el.style.display = "";
+        //     },
+        // });
     };
 };
